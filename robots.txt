@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemap-Verweis
+Sitemap: https://www.sybilla-sedlar.at/sitemap.xml
+
+# Verhindern der Indexierung von nicht-öffentlichen Bereichen (falls vorhanden)
+Disallow: /admin/
+Disallow: /private/
+Disallow: /*.pdf$
