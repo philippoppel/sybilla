@@ -120,10 +120,74 @@
         }
         .nav-link {
             transition: color 0.3s ease;
+            white-space: nowrap;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
         }
         .nav-link:hover, .nav-link.active {
             color: #3b82f6; /* Tailwind blue-500 */
+            background-color: rgba(59, 130, 246, 0.1);
         }
+        
+        /* Header responsiveness improvements */
+        .header-container {
+            min-height: 4rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-container {
+            flex-shrink: 0;
+            min-width: 0;
+        }
+        
+        .logo-text {
+            font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+            line-height: 1.2;
+        }
+        
+        .nav-container {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            min-width: 0;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: clamp(0.5rem, 2vw, 2rem);
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        
+        /* Mobile menu button improvements */
+        .mobile-menu-btn {
+            flex-shrink: 0;
+            padding: 0.5rem;
+            margin-left: 1rem;
+        }
+        
+        /* Prevent text wrapping in navigation */
+        @media (max-width: 1200px) {
+            .nav-links {
+                gap: clamp(0.25rem, 1.5vw, 1rem);
+            }
+            .nav-link {
+                font-size: 0.875rem;
+                padding: 0.375rem 0.5rem;
+            }
+        }
+        
+        /* Very small screens - force mobile menu earlier */
+        @media (max-width: 900px) {
+            .nav-links {
+                display: none !important;
+            }
+            .mobile-menu-btn {
+                display: block !important;
+            }
+        }
+        
         /* Verhindert "flackern" von AOS Animationen vor dem Laden */
         [data-aos] {
             opacity: 0;
@@ -158,28 +222,43 @@
         .focus\:ring-4:focus {
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
         }
+        
+        /* Container max-width improvements for better scaling */
+        .responsive-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-left: clamp(1rem, 4vw, 3rem);
+            padding-right: clamp(1rem, 4vw, 3rem);
+        }
+        
+        /* Button improvements for better scaling */
+        .btn-responsive {
+            font-size: clamp(0.875rem, 2vw, 1.125rem);
+            padding: clamp(0.5rem, 2vw, 0.75rem) clamp(1rem, 3vw, 2rem);
+        }
     </style>
 </head>
 <body class="bg-white text-gray-800">
 <!-- Skip to content link for accessibility -->
 <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded z-50">Zum Hauptinhalt springen</a>
 <header id="header" class="bg-white sticky top-0 z-50 shadow-md transition-all duration-300" role="banner">
-    <div class="container mx-auto px-6 py-3">
-        <div class="flex items-center justify-between">
-            <a href="#home" class="flex items-center space-x-3">
-                <img src="./logo.png" alt="Logo Sybilla Sedlar - Interim-Finanzmanagement" class="h-10 w-auto" loading="eager">
-                <span class="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">Sybilla Sedlar</span>
+    <div class="responsive-container">
+        <div class="header-container py-3">
+            <a href="#home" class="logo-container flex items-center space-x-3">
+                <img src="./logo.png" alt="Logo Sybilla Sedlar - Interim-Finanzmanagement" class="h-8 w-auto sm:h-10" loading="eager">
+                <span class="logo-text font-bold text-gray-900 tracking-tight">Sybilla Sedlar</span>
             </a>
-            <nav class="hidden md:flex items-center space-x-6 lg:space-x-8" role="navigation" aria-label="Hauptnavigation">
-                <a href="#home" class="nav-link font-medium text-gray-600 active">Startseite</a>
-                <a href="#about" class="nav-link font-medium text-gray-600">Über mich</a>
-                <a href="#services" class="nav-link font-medium text-gray-600">Leistungen</a>
-                <a href="#projects" class="nav-link font-medium text-gray-600">Projekte</a>
-                <a href="#testimonials" class="nav-link font-medium text-gray-600">Referenzen</a>
-                <a href="#contact" class="nav-link font-medium text-gray-600">Kontakt</a>
-            </nav>
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 rounded" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-menu">
+            <div class="nav-container">
+                <nav class="nav-links items-center" role="navigation" aria-label="Hauptnavigation">
+                    <a href="#home" class="nav-link font-medium text-gray-600 active">Startseite</a>
+                    <a href="#about" class="nav-link font-medium text-gray-600">Über mich</a>
+                    <a href="#services" class="nav-link font-medium text-gray-600">Leistungen</a>
+                    <a href="#projects" class="nav-link font-medium text-gray-600">Projekte</a>
+                    <a href="#testimonials" class="nav-link font-medium text-gray-600">Referenzen</a>
+                    <a href="#contact" class="nav-link font-medium text-gray-600">Kontakt</a>
+                </nav>
+                <button id="mobile-menu-button" class="mobile-menu-btn text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded hidden" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-menu">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
             </div>
@@ -198,21 +277,21 @@
 <main role="main" id="main-content">
     <section id="home" class="hero-bg text-white flex items-center relative" style="min-height: calc(var(--vh, 1vh) * 100);" role="banner" aria-labelledby="hero-heading">
         <div class="bg-black/50 absolute inset-0 z-0"></div>
-        <div class="container mx-auto px-6 text-center relative z-10" data-aos="fade-in" data-aos-duration="1500">
-            <h1 id="hero-heading" class="text-4xl md:text-6xl font-bold leading-tight mb-4 drop-shadow-md">
+        <div class="responsive-container text-center relative z-10" data-aos="fade-in" data-aos-duration="1500">
+            <h1 id="hero-heading" class="font-bold leading-tight mb-4 drop-shadow-md" style="font-size: clamp(2rem, 6vw, 4rem);">
                 Klarheit und Struktur für Ihre Finanzen
             </h1>
-            <p class="text-lg md:text-2xl font-light max-w-3xl mx-auto drop-shadow-sm">
+            <p class="font-light max-w-4xl mx-auto drop-shadow-sm mb-8" style="font-size: clamp(1.125rem, 3vw, 1.5rem); line-height: 1.4;">
                 Als Ihre Interim-Managerin im Finanzbereich sorge ich für Stabilität, optimiere Prozesse und überbrücke Vakanzen – professionell, flexibel und lösungsorientiert.
             </p>
-            <a href="#services" class="mt-8 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-transform transform hover:scale-105 focus:ring-4 focus:ring-blue-300" aria-describedby="services-description">
+            <a href="#services" class="btn-responsive inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all transform hover:scale-105 focus:ring-4 focus:ring-blue-300" aria-describedby="services-description">
                 Meine Leistungen entdecken
             </a>
         </div>
     </section>
 
     <section id="about" class="py-20 md:py-36 bg-white overflow-hidden">
-        <div class="container mx-auto px-6">
+        <div class="responsive-container">
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Über mich</h2>
                 <p class="text-lg text-gray-600 mt-2">Ihre Expertin für Finanzen auf Zeit.</p>
@@ -226,9 +305,9 @@
                     <h3 class="text-2xl font-semibold text-gray-800 mb-4">Mag. (FH) Sybilla Sedlar</h3>
                     <p class="text-gray-700 mb-6 leading-relaxed">Mit über einem Jahrzehnt Berufserfahrung in internationalen Konzernumgebungen und als selbstständige Interim-Managerin biete ich eine einzigartige Kombination aus strategischem Weitblick und operativer Hands-on-Mentalität. <strong>Mein Ziel: nahtlose Integration in Ihr Unternehmen und messbarer Mehrwert ab dem ersten Tag.</strong></p>
                     <p class="text-gray-700 mb-6 leading-relaxed">Nach fünf Jahren als Einkaufsmanagerin bei Estée Lauder, wo ich komplexe Finanzprozesse in einem dynamischen Marktumfeld managte, habe ich mich auf Interim-Management spezialisiert. Mein Abschluss in Unternehmensführung (FH des BFI Wien) und die praktische Erfahrung in über 20 erfolgreichen Projekten ermöglichen es mir, auch in kritischen Situationen schnell und effektiv zu handeln.</p>
-                    <div class="mt-8">
-                        <a href="#contact" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors focus:ring-4 focus:ring-blue-300 mr-4">Jetzt Kontakt aufnehmen</a>
-                        <a href="#services" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg transition-colors focus:ring-4 focus:ring-gray-300">Leistungen ansehen</a>
+                    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                        <a href="#contact" class="btn-responsive bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors focus:ring-4 focus:ring-blue-300 text-center">Jetzt Kontakt aufnehmen</a>
+                        <a href="#services" class="btn-responsive bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-lg transition-colors focus:ring-4 focus:ring-gray-300 text-center">Leistungen ansehen</a>
                     </div>
                 </div>
             </div>
@@ -236,7 +315,7 @@
     </section>
 
     <section id="services" class="py-20 md:py-32 bg-gray-50 overflow-hidden">
-        <div class="container mx-auto px-6">
+        <div class="responsive-container">
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Leistungen</h2>
                 <p class="text-lg text-gray-600 mt-2">Maßgeschneiderte Unterstützung für Ihre finanzielle Stabilität und Effizienz.</p>
@@ -263,7 +342,7 @@
     </section>
 
     <section id="projects" class="py-20 md:py-32 bg-white overflow-hidden">
-        <div class="container mx-auto px-6">
+        <div class="responsive-container">
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Ausgewählte Projekte</h2>
                 <p class="text-lg text-gray-600 mt-2">Ein Einblick in meine praktische Arbeit und erzielte Ergebnisse.</p>
@@ -296,7 +375,7 @@
     </section>
 
     <section id="testimonials" class="py-20 md:py-32 bg-gray-50 overflow-hidden">
-        <div class="container mx-auto px-6">
+        <div class="responsive-container">
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Kundenstimmen</h2>
                 <p class="text-lg text-gray-600 mt-2">Was meine Partner über die Zusammenarbeit sagen.</p>
@@ -322,7 +401,7 @@
     </section>
 
     <section id="contact" class="py-20 md:py-32 bg-white overflow-hidden">
-        <div class="container mx-auto px-6">
+        <div class="responsive-container">
             <div class="text-center mb-12" data-aos="fade-up">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Kontakt</h2>
                 <p class="text-lg text-gray-600 mt-2">Lassen Sie uns über Ihr nächstes Projekt sprechen.</p>
@@ -367,7 +446,7 @@
 </main>
 
 <footer class="bg-gray-800 text-white">
-    <div class="container mx-auto px-6 py-8">
+    <div class="responsive-container py-8">
         <div class="text-center">
             <p>&copy; 2025 Sybilla Sedlar | Interim-Finanzmanagement</p>
             <p class="text-sm text-gray-400 mt-2">Professionell. Flexibel. Lösungsorientiert.</p>
