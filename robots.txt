@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap-Verweis
-Sitemap: https://sybillasedlar.vercel.app/sitemap.xml
+Sitemap: https://www.sybilla-sedlar.at/sitemap.xml
 
 # Verhindern der Indexierung von nicht-öffentlichen Bereichen (falls vorhanden)
 Disallow: /admin/
