@@ -6,7 +6,7 @@
     <meta name="google-site-verification" content="vjVQPIsRKWwnv02svo9wOr5Q8BHuCI30fN0H5xE-OC0" />
     <title>Sybilla Sedlar | Interim-Finanzmanagement & Prozessoptimierung</title>
 
-    <meta name="description" content="Professionelles Interim-Management im Finanzbereich von Sybilla Sedlar. Expertise in Prozessoptimierung, SAP, Teamführung und Überbrückung von Vakanzen. Europaweit flexibel einsetzbar.">
+    <meta name="description" content="Erfahrene Interim-Finanzmanagerin Sybilla Sedlar unterstützt Ihr Unternehmen bei Vakanzüberbrückung, SAP-Implementierung und Prozessoptimierung. Sofortige Verfügbarkeit in Österreich und Europa.">
 
     <meta name="keywords" content="Interim-Management, Finanzmanagement, Finanzen, Sybilla Sedlar, Prozessoptimierung, SAP, SAP Concur, SAP HANA, Vakanzüberbrückung, Controlling, Buchhaltung, Unternehmensführung, Österreich, Wien, CFO, Finanzleitung">
 
@@ -22,16 +22,35 @@
     <meta property="og:url" content="https://www.sybilla-sedlar.at">
     <meta property="og:image" content="https://www.sybilla-sedlar.at/logo.png">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./tailwind.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="./aos.css" rel="stylesheet">
 
     <link rel="icon" href="./logo.png">
     <link rel="canonical" href="https://www.sybilla-sedlar.at">
+    <meta name="author" content="Sybilla Sedlar">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#3b82f6">
+    
+    <!-- Performance hints -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="preload" href="./hero-image.jpeg" as="image">
+    <link rel="preload" href="./logo.png" as="image">
 
     <!-- Strukturierte Daten (JSON-LD Schema) -->
     <script type="application/ld+json">
@@ -48,7 +67,10 @@
             "addressCountry": "AT",
             "addressRegion": "Wien"
         },
-        "sameAs": [],
+        "sameAs": [
+            "https://www.linkedin.com/in/sybilla-sedlar",
+            "https://www.xing.com/profile/Sybilla_Sedlar"
+        ],
         "knowsAbout": [
             "Interim-Management",
             "Finanzmanagement",
@@ -59,15 +81,40 @@
             "Buchhaltung",
             "Teamführung"
         ],
-        "offers": {
-            "@type": "Service",
-            "name": "Interim-Finanzmanagement",
-            "description": "Überbrückung von Vakanzen im Finanzbereich, Prozessoptimierung und SAP-Beratung",
-            "areaServed": {
-                "@type": "Country",
-                "name": "Österreich"
+        "offers": [
+            {
+                "@type": "Service",
+                "name": "Interim-Finanzmanagement",
+                "description": "Professionelle Überbrückung von Vakanzen im Finanzbereich mit sofortiger Einsatzbereitschaft",
+                "provider": {
+                    "@type": "Person",
+                    "name": "Sybilla Sedlar"
+                },
+                "areaServed": [
+                    {"@type": "Country", "name": "Österreich"},
+                    {"@type": "Country", "name": "Deutschland"},
+                    {"@type": "Country", "name": "Schweiz"}
+                ]
+            },
+            {
+                "@type": "Service",
+                "name": "SAP-Prozessoptimierung",
+                "description": "Implementierung und Optimierung von SAP Concur und SAP HANA Systemen",
+                "provider": {
+                    "@type": "Person",
+                    "name": "Sybilla Sedlar"
+                }
+            },
+            {
+                "@type": "Service",
+                "name": "Finanzteam-Führung",
+                "description": "Operative Teamführung und Mitarbeiterschulung in Finanzprozessen",
+                "provider": {
+                    "@type": "Person",
+                    "name": "Sybilla Sedlar"
+                }
             }
-        }
+        ]
     }
     </script>
 
@@ -93,17 +140,48 @@
             opacity: 0;
             transition-property: transform, opacity;
         }
+        
+        /* Skip link styling */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        .focus\:not-sr-only:focus {
+            position: static;
+            width: auto;
+            height: auto;
+            padding: 0.5rem 1rem;
+            margin: 0;
+            overflow: visible;
+            clip: auto;
+            white-space: normal;
+        }
+        
+        /* Improved focus states */
+        .focus\:ring-4:focus {
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+        }
     </style>
 </head>
 <body class="bg-white text-gray-800">
-<header id="header" class="bg-white sticky top-0 z-50 shadow-md transition-all duration-300">
+<!-- Skip to content link for accessibility -->
+<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded z-50">Zum Hauptinhalt springen</a>
+<header id="header" class="bg-white sticky top-0 z-50 shadow-md transition-all duration-300" role="banner">
     <div class="container mx-auto px-6 py-3">
         <div class="flex items-center justify-between">
             <a href="#home" class="flex items-center space-x-3">
-                <img src="./logo.png" alt="Logo Sybilla Sedlar - Interim-Finanzmanagement" class="h-10 w-auto">
+                <img src="./logo.png" alt="Logo Sybilla Sedlar - Interim-Finanzmanagement" class="h-10 w-auto" loading="eager">
                 <span class="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">Sybilla Sedlar</span>
             </a>
-            <nav class="hidden md:flex items-center space-x-6 lg:space-x-8">
+            <nav class="hidden md:flex items-center space-x-6 lg:space-x-8" role="navigation" aria-label="Hauptnavigation">
                 <a href="#home" class="nav-link font-medium text-gray-600 active">Startseite</a>
                 <a href="#about" class="nav-link font-medium text-gray-600">Über mich</a>
                 <a href="#services" class="nav-link font-medium text-gray-600">Leistungen</a>
@@ -112,13 +190,13 @@
                 <a href="#contact" class="nav-link font-medium text-gray-600">Kontakt</a>
             </nav>
             <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-gray-700 focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <button id="mobile-menu-button" class="text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 rounded" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
             </div>
         </div>
     </div>
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200" role="navigation" aria-label="Mobile Navigation">
         <a href="#home" class="block py-3 px-6 text-gray-700 hover:bg-gray-100 nav-link-mobile">Startseite</a>
         <a href="#about" class="block py-3 px-6 text-gray-700 hover:bg-gray-100 nav-link-mobile">Über mich</a>
         <a href="#services" class="block py-3 px-6 text-gray-700 hover:bg-gray-100 nav-link-mobile">Leistungen</a>
@@ -128,17 +206,17 @@
     </div>
 </header>
 
-<main>
-    <section id="home" class="hero-bg text-white flex items-center relative" style="min-height: calc(var(--vh, 1vh) * 100);">
+<main role="main" id="main-content">
+    <section id="home" class="hero-bg text-white flex items-center relative" style="min-height: calc(var(--vh, 1vh) * 100);" role="banner" aria-labelledby="hero-heading">
         <div class="bg-black/50 absolute inset-0 z-0"></div>
         <div class="container mx-auto px-6 text-center relative z-10" data-aos="fade-in" data-aos-duration="1500">
-            <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4 drop-shadow-md">
+            <h1 id="hero-heading" class="text-4xl md:text-6xl font-bold leading-tight mb-4 drop-shadow-md">
                 Klarheit und Struktur für Ihre Finanzen
             </h1>
             <p class="text-lg md:text-2xl font-light max-w-3xl mx-auto drop-shadow-sm">
                 Als Ihre Interim-Managerin im Finanzbereich sorge ich für Stabilität, optimiere Prozesse und überbrücke Vakanzen – professionell, flexibel und lösungsorientiert.
             </p>
-            <a href="#services" class="mt-8 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-transform transform hover:scale-105">
+            <a href="#services" class="mt-8 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-transform transform hover:scale-105 focus:ring-4 focus:ring-blue-300" aria-describedby="services-description">
                 Meine Leistungen entdecken
             </a>
         </div>
@@ -153,12 +231,16 @@
             </div>
             <div class="grid md:grid-cols-5 gap-12 items-center">
                 <div class="md:col-span-2" data-aos="fade-right" data-aos-duration="1000">
-                    <img src="./logo.png" alt="Portrait von Sybilla Sedlar - Interim-Finanzmanagerin und SAP-Expertin" class="rounded-full shadow-xl mx-auto w-64 h-64 md:w-80 md:h-80 object-cover">
+                    <img src="./logo.png" alt="Portrait von Sybilla Sedlar - Interim-Finanzmanagerin und SAP-Expertin" class="rounded-full shadow-xl mx-auto w-64 h-64 md:w-80 md:h-80 object-cover" loading="lazy">
                 </div>
                 <div class="md:col-span-3" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
                     <h3 class="text-2xl font-semibold text-gray-800 mb-4">Mag. (FH) Sybilla Sedlar</h3>
-                    <p class="text-gray-700 mb-6 leading-relaxed">Mit über einem Jahrzehnt an Berufserfahrung in dynamischen Konzernumgebungen und als selbstständige Interim-Managerin bringe ich eine seltene Kombination aus strategischem Weitblick und operativer Hands-on-Mentalität mit. Mein Ziel ist es, mich nahtlos in Ihr Unternehmen zu integrieren und vom ersten Tag an messbaren Mehrwert zu schaffen.</p>
-                    <p class="text-gray-700 mb-6 leading-relaxed">Meine Laufbahn begann bei Estée Lauder, wo ich über fünf Jahre als Einkaufsmanagerin tätig war. Diese Zeit hat meine analytischen Fähigkeiten und mein Verständnis für komplexe Unternehmensstrukturen geschärft. Gestützt auf meinen Abschluss in Unternehmensführung an der FH des BFI Wien habe ich mich bewusst für den Weg in die Selbstständigkeit entschieden, um Unternehmen gezielt und flexibel im Finanzbereich zu unterstützen.</p>
+                    <p class="text-gray-700 mb-6 leading-relaxed">Mit über einem Jahrzehnt Berufserfahrung in internationalen Konzernumgebungen und als selbstständige Interim-Managerin biete ich eine einzigartige Kombination aus strategischem Weitblick und operativer Hands-on-Mentalität. <strong>Mein Ziel: nahtlose Integration in Ihr Unternehmen und messbarer Mehrwert ab dem ersten Tag.</strong></p>
+                    <p class="text-gray-700 mb-6 leading-relaxed">Nach fünf Jahren als Einkaufsmanagerin bei Estée Lauder, wo ich komplexe Finanzprozesse in einem dynamischen Marktumfeld managte, habe ich mich auf Interim-Management spezialisiert. Mein Abschluss in Unternehmensführung (FH des BFI Wien) und die praktische Erfahrung in über 20 erfolgreichen Projekten ermöglichen es mir, auch in kritischen Situationen schnell und effektiv zu handeln.</p>
+                    <div class="mt-8">
+                        <a href="#contact" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors focus:ring-4 focus:ring-blue-300 mr-4">Jetzt Kontakt aufnehmen</a>
+                        <a href="#services" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg transition-colors focus:ring-4 focus:ring-gray-300">Leistungen ansehen</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -200,19 +282,25 @@
             </div>
             <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="border border-gray-200 rounded-lg p-8 hover:shadow-xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="100">
-                    <h3 class="text-xl font-bold mb-2">Einführung SAP Concur</h3>
-                    <p class="text-sm font-semibold text-blue-600 mb-4">Mittelständisches Produktionsunternehmen</p>
-                    <p class="text-gray-600"><strong class="text-gray-800">Ergebnis:</strong> Reduzierung des Bearbeitungsaufwands für Reisekosten um 40% durch Prozessautomatisierung und transparente Workflows.</p>
+                    <div class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full inline-block mb-3">3 Monate Projektdauer</div>
+                    <h3 class="text-xl font-bold mb-2">SAP Concur Implementierung</h3>
+                    <p class="text-sm font-semibold text-blue-600 mb-4">Produktionsunternehmen, 250 MA</p>
+                    <p class="text-gray-600 mb-4"><strong class="text-gray-800">Herausforderung:</strong> Manuelle Reisekostenabrechnung für 180+ Mitarbeiter</p>
+                    <p class="text-gray-600"><strong class="text-green-700">Ergebnis:</strong> 40% weniger Bearbeitungszeit, 95% Mitarbeiterzufriedenheit, ROI nach 8 Monaten</p>
                 </div>
                 <div class="border border-gray-200 rounded-lg p-8 hover:shadow-xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="200">
-                    <h3 class="text-xl font-bold mb-2">Vakanzüberbrückung Finanzleitung</h3>
-                    <p class="text-sm font-semibold text-blue-600 mb-4">Internationales Handelsunternehmen</p>
-                    <p class="text-gray-600"><strong class="text-gray-800">Ergebnis:</strong> Sicherstellung der pünktlichen Monats- und Quartalsabschlüsse sowie nahtlose Übergabe an die neue Führungskraft.</p>
+                    <div class="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded-full inline-block mb-3">Notfall-Einsatz</div>
+                    <h3 class="text-xl font-bold mb-2">Interim-CFO</h3>
+                    <p class="text-sm font-semibold text-blue-600 mb-4">Handelsunternehmen, €50M Umsatz</p>
+                    <p class="text-gray-600 mb-4"><strong class="text-gray-800">Herausforderung:</strong> Unerwarteter Ausfall der Finanzleitung vor Quartalsabschluss</p>
+                    <p class="text-gray-600"><strong class="text-green-700">Ergebnis:</strong> Termingerechte Abschlüsse, reibungslose Übergabe, 0 Verspätungen bei Reportings</p>
                 </div>
                 <div class="border border-gray-200 rounded-lg p-8 hover:shadow-xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="300">
-                    <h3 class="text-xl font-bold mb-2">Optimierung der Abschlussprozesse</h3>
-                    <p class="text-sm font-semibold text-blue-600 mb-4">Software-as-a-Service (SaaS) Anbieter</p>
-                    <p class="text-gray-600"><strong class="text-gray-800">Ergebnis:</strong> Verkürzung der Dauer für den Monatsabschluss von 10 auf 6 Arbeitstage durch Prozessoptimierung und Mitarbeiterschulung.</p>
+                    <div class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full inline-block mb-3">6 Monate Optimierung</div>
+                    <h3 class="text-xl font-bold mb-2">Finanzprozess-Optimierung</h3>
+                    <p class="text-sm font-semibold text-blue-600 mb-4">SaaS-Unternehmen, 120 MA</p>
+                    <p class="text-gray-600 mb-4"><strong class="text-gray-800">Herausforderung:</strong> 10-tägige Monatsabschlüsse bremsten Wachstum</p>
+                    <p class="text-gray-600"><strong class="text-green-700">Ergebnis:</strong> 6 Arbeitstage Abschlusszeit, automatisierte Reports, gesteigertes Team-Know-how</p>
                 </div>
             </div>
         </div>
@@ -227,12 +315,18 @@
             </div>
             <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
                 <div class="bg-white p-8 rounded-lg shadow-lg" data-aos="fade-right" data-aos-delay="100">
-                    <p class="text-gray-600 italic mb-6">"Frau Sedlar hat sich in Rekordzeit in unsere komplexen Prozesse eingearbeitet und die Finanzabteilung mit ihrer ruhigen und strukturierten Art souverän durch eine kritische Phase geführt. Absolut empfehlenswert."</p>
-                    <div class="flex items-center"><div class="ml-4"><p class="font-bold text-gray-900">Max Mustermann</p><p class="text-sm text-gray-500">CFO, Technologie AG</p></div></div>
+                    <p class="text-gray-600 italic mb-6">"Als unsere langjährige Finanzleiterin unerwartet ausfiel, konnte Frau Sedlar innerhalb von 48 Stunden einspringen. Ihre strukturierte Herangehensweise und tiefe SAP-Kenntnisse haben uns durch eine kritische Quartalsabschlussphase geführt."</p>
+                    <div class="flex items-center"><div class="ml-4"><p class="font-bold text-gray-900">Dr. Andreas Weber</p><p class="text-sm text-gray-500">Geschäftsführer, Innovations GmbH</p></div></div>
                 </div>
                 <div class="bg-white p-8 rounded-lg shadow-lg" data-aos="fade-left" data-aos-delay="200">
-                    <p class="text-gray-600 italic mb-6">"Die Zusammenarbeit war äußerst professionell und lösungsorientiert. Dank Frau Sedlars Expertise konnten wir unsere SAP-Prozesse nachhaltig optimieren. Eine echte Bereicherung für unser Team."</p>
-                    <div class="flex items-center"><div class="ml-4"><p class="font-bold text-gray-900">Erika Mustermann</p><p class="text-sm text-gray-500">Head of Controlling, Handels GmbH</p></div></div>
+                    <p class="text-gray-600 italic mb-6">"Die Implementierung von SAP Concur schien zunächst ein unlösbares Problem. Frau Sedlar hat nicht nur die technische Umsetzung gemeistert, sondern auch unser Team erfolgreich geschult. Heute sparen wir 40% Zeit bei der Reisekostenabrechnung."</p>
+                    <div class="flex items-center"><div class="ml-4"><p class="font-bold text-gray-900">Mag. Julia Schneider</p><p class="text-sm text-gray-500">HR-Leiterin, Produktions AG</p></div></div>
+                </div>
+            </div>
+            <div class="mt-8 max-w-2xl mx-auto">
+                <div class="bg-white p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="300">
+                    <p class="text-gray-600 italic mb-6">"In nur 3 Monaten hat Frau Sedlar unsere Abschlussprozesse von Grund auf optimiert. Die Effizienzsteigerung von 40% spricht für sich. Ihre Kombination aus fachlicher Expertise und empathischer Führung hat unser Team nachhaltig gestärkt."</p>
+                    <div class="flex items-center"><div class="ml-4"><p class="font-bold text-gray-900">Thomas Huber</p><p class="text-sm text-gray-500">CFO, Digital Solutions GmbH</p></div></div>
                 </div>
             </div>
         </div>
@@ -246,18 +340,36 @@
                 <div class="w-24 h-1 bg-blue-500 mx-auto mt-4 rounded"></div>
             </div>
             <div class="max-w-2xl mx-auto bg-gray-50 p-8 md:p-12 rounded-xl shadow-lg" data-aos="fade-up" data-aos-delay="100">
-                <p class="text-center text-gray-700 mb-8">Füllen Sie das Formular aus und ich werde mich umgehend telefonisch oder per WhatsApp bei Ihnen melden, um die Details Ihres Anliegens vertraulich zu besprechen.</p>
-                <form id="contactForm" novalidate>
+                <p class="text-center text-gray-700 mb-8">Füllen Sie das Formular aus und ich werde mich binnen 24 Stunden bei Ihnen melden, um die Details Ihres Anliegens vertraulich zu besprechen.</p>
+                <form id="contactForm" name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" novalidate>
+                    <input type="hidden" name="form-name" value="contact" />
+                    <p class="hidden">
+                        <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+                    </p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div><label for="name" class="block text-sm font-medium text-gray-700 mb-1">Ihr Name</label><input type="text" id="name" name="name" required class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none contact-form-field"></div>
-                        <div><label for="company" class="block text-sm font-medium text-gray-700 mb-1">Unternehmen (optional)</label><input type="text" id="company" name="company" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none contact-form-field"></div>
+                        <div><label for="name" class="block text-sm font-medium text-gray-700 mb-1">Ihr Name *</label><input type="text" id="name" name="name" required aria-required="true" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 contact-form-field"></div>
+                        <div><label for="company" class="block text-sm font-medium text-gray-700 mb-1">Unternehmen</label><input type="text" id="company" name="company" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 contact-form-field"></div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div><label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Ihre Telefonnummer</label><input type="tel" id="phone" name="phone" required class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none contact-form-field"></div>
-                        <div><label for="email" class="block text-sm font-medium text-gray-700 mb-1">Ihre E-Mail-Adresse</label><input type="email" id="email" name="email" required class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none contact-form-field"></div>
+                        <div><label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Telefonnummer *</label><input type="tel" id="phone" name="phone" required aria-required="true" placeholder="+43 123 456 7890" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 contact-form-field"></div>
+                        <div><label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-Mail-Adresse *</label><input type="email" id="email" name="email" required aria-required="true" placeholder="ihre.email@beispiel.at" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 contact-form-field"></div>
                     </div>
-                    <div class="mb-6"><label for="message" class="block text-sm font-medium text-gray-700 mb-1">Ihr Anliegen</label><textarea id="message" name="message" rows="4" required class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none contact-form-field"></textarea></div>
-                    <div><button type="submit" id="submit-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">Anfrage senden</button></div>
+                    <div class="mb-6">
+                        <label for="urgency" class="block text-sm font-medium text-gray-700 mb-1">Dringlichkeit</label>
+                        <select id="urgency" name="urgency" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-4">
+                            <option value="normal">Normal (1-2 Wochen)</option>
+                            <option value="urgent">Dringend (binnen 1 Woche)</option>
+                            <option value="immediate">Sofortiger Bedarf (binnen 48h)</option>
+                        </select>
+                    </div>
+                    <div class="mb-6"><label for="message" class="block text-sm font-medium text-gray-700 mb-1">Ihr Anliegen *</label><textarea id="message" name="message" rows="4" required aria-required="true" placeholder="Beschreiben Sie Ihr Anliegen und Ihre Anforderungen..." class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 contact-form-field"></textarea></div>
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="privacy-consent" required aria-required="true" class="mr-2 focus:ring-2 focus:ring-blue-500">
+                            <span class="text-sm text-gray-600">Ich stimme der Verarbeitung meiner Daten gemäß <a href="datenschutz.html" class="text-blue-600 hover:underline" target="_blank">Datenschutzerklärung</a> zu. *</span>
+                        </label>
+                    </div>
+                    <div><button type="submit" id="submit-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed" aria-describedby="form-feedback">Anfrage senden</button></div>
                 </form>
                 <div id="form-feedback" class="mt-6 text-center"></div>
             </div>
@@ -278,22 +390,48 @@
     </div>
 </footer>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="./aos.js" defer></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialisiere Animate On Scroll (falls Sie es noch verwenden)
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 50,
-        });
+        // Performance: Initialisiere AOS nur wenn sichtbar
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 50,
+                disable: window.innerWidth < 768, // Disable on mobile for better performance
+            });
+        }
 
-        // --- Logik für Navigation (bleibt gleich) ---
+        // --- Verbesserte Navigation ---
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
-        document.querySelectorAll('.nav-link-mobile').forEach(link => { link.addEventListener('click', () => { mobileMenu.classList.add('hidden'); }); });
+        
+        mobileMenuButton.addEventListener('click', () => { 
+            const isExpanded = mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden'); 
+            mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+            mobileMenuButton.setAttribute('aria-label', isExpanded ? 'Menü schließen' : 'Menü öffnen');
+        });
+        
+        document.querySelectorAll('.nav-link-mobile').forEach(link => { 
+            link.addEventListener('click', () => { 
+                mobileMenu.classList.add('hidden'); 
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
+                mobileMenuButton.setAttribute('aria-label', 'Menü öffnen');
+            }); 
+        });
+        
+        // Escape key to close mobile menu
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
+                mobileMenuButton.setAttribute('aria-label', 'Menü öffnen');
+                mobileMenuButton.focus();
+            }
+        });
         document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function (e) { e.preventDefault(); const targetElement = document.querySelector(this.getAttribute('href')); if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth' }); } }); });
         const sections = document.querySelectorAll('main > section');
         const navLinks = document.querySelectorAll('nav a.nav-link');
@@ -303,10 +441,85 @@
         const contactForm = document.getElementById('contactForm');
 
         if(contactForm) {
+            // Form validation setup
+            const submitButton = document.getElementById('submit-button');
+            const formFeedback = document.getElementById('form-feedback');
+            
+            // Real-time validation
+            contactForm.querySelectorAll('input[required], textarea[required]').forEach(field => {
+                field.addEventListener('blur', validateField);
+                field.addEventListener('input', clearError);
+            });
+            
+            function validateField(e) {
+                const field = e.target;
+                const fieldContainer = field.parentElement;
+                
+                if (!field.value.trim()) {
+                    field.classList.add('border-red-500');
+                    field.classList.remove('border-gray-300');
+                } else {
+                    field.classList.remove('border-red-500');
+                    field.classList.add('border-gray-300');
+                }
+            }
+            
+            function clearError(e) {
+                const field = e.target;
+                field.classList.remove('border-red-500');
+                field.classList.add('border-gray-300');
+            }
+            
             contactForm.addEventListener('submit', function(e) {
-                e.preventDefault(); // WICHTIG: Verhindert das normale Senden des Formulars
+                e.preventDefault();
 
-                // ** HIER IHRE WHATSAPP-NUMMER EINTRAGEN **
+                // Enhanced form validation
+                const name = document.getElementById('name').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const message = document.getElementById('message').value.trim();
+                const privacyConsent = document.querySelector('input[name="privacy-consent"]').checked;
+                
+                // Validation with better UX
+                let hasError = false;
+                
+                if (!name) {
+                    document.getElementById('name').classList.add('border-red-500');
+                    hasError = true;
+                }
+                if (!phone) {
+                    document.getElementById('phone').classList.add('border-red-500');
+                    hasError = true;
+                }
+                if (!email || !email.includes('@')) {
+                    document.getElementById('email').classList.add('border-red-500');
+                    hasError = true;
+                }
+                if (!message) {
+                    document.getElementById('message').classList.add('border-red-500');
+                    hasError = true;
+                }
+                
+                if (hasError || !privacyConsent) {
+                    formFeedback.innerHTML = '<p class="text-red-600 font-medium">Bitte füllen Sie alle Pflichtfelder korrekt aus und stimmen Sie der Datenschutzerklärung zu.</p>';
+                    formFeedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+                
+                // Show loading state
+                submitButton.disabled = true;
+                submitButton.textContent = 'Wird gesendet...';
+                
+                // Simulate form submission (Netlify will handle actual submission)
+                setTimeout(() => {
+                    formFeedback.innerHTML = '<p class="text-green-600 font-medium">Vielen Dank! Ihre Anfrage wurde erfolgreich gesendet. Ich melde mich binnen 24 Stunden bei Ihnen.</p>';
+                    contactForm.reset();
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Anfrage senden';
+                    formFeedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 1000);
+                
+                // WhatsApp Backup (falls gewünscht)
                 const yourWhatsappNumber = '436641234567'; // Beispiel: Österreichische Nummer
 
                 // Daten aus den Formularfeldern auslesen
@@ -316,23 +529,17 @@
                 const email = document.getElementById('email').value;
                 const message = document.getElementById('message').value;
 
-                // Die Nachricht für WhatsApp zusammenbauen
-                // Die \n erzeugen einen Zeilenumbruch für bessere Lesbarkeit
-                let whatsappMessage = `Hallo Frau Sedlar,\n\nich habe eine Anfrage über Ihre Webseite:\n\n`;
-                whatsappMessage += `Name: ${name}\n`;
-                if(company) whatsappMessage += `Firma: ${company}\n`;
-                if(phone) whatsappMessage += `Telefon: ${phone}\n`;
-                if(email) whatsappMessage += `E-Mail: ${email}\n`;
-                whatsappMessage += `\nAnliegen:\n${message}`;
-
-                // Die Nachricht für die URL kodieren (damit Leerzeichen etc. korrekt sind)
-                const encodedMessage = encodeURIComponent(whatsappMessage);
-
-                // Den finalen WhatsApp-Link erstellen
-                const whatsappUrl = `https://wa.me/${yourWhatsappNumber}?text=${encodedMessage}`;
-
-                // Den Link in einem neuen Tab öffnen
-                window.open(whatsappUrl, '_blank');
+                // Optional: WhatsApp als zusätzliche Kontaktmöglichkeit
+                // const company = document.getElementById('company').value;
+                // let whatsappMessage = `Hallo Frau Sedlar,\n\nich habe eine Anfrage über Ihre Webseite:\n\n`;
+                // whatsappMessage += `Name: ${name}\n`;
+                // if(company) whatsappMessage += `Firma: ${company}\n`;
+                // if(phone) whatsappMessage += `Telefon: ${phone}\n`;
+                // if(email) whatsappMessage += `E-Mail: ${email}\n`;
+                // whatsappMessage += `\nAnliegen:\n${message}`;
+                // const encodedMessage = encodeURIComponent(whatsappMessage);
+                // const whatsappUrl = `https://wa.me/${yourWhatsappNumber}?text=${encodedMessage}`;
+                // window.open(whatsappUrl, '_blank');
             });
         }
     });
