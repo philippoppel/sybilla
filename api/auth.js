@@ -82,6 +82,16 @@ export default async function handler(req, res) {
             expiresIn: '2h'
         });
     } else {
+        // Debug logging for failed attempts
+        console.log('Login failed - credential mismatch:', {
+            providedUser: username,
+            expectedUser: ADMIN_USER,
+            userMatch: username === ADMIN_USER,
+            providedPassLength: password ? password.length : 0,
+            expectedPassLength: ADMIN_PASS ? ADMIN_PASS.length : 0,
+            passMatch: password === ADMIN_PASS
+        });
+        
         // Add delay to prevent brute force
         await new Promise(resolve => setTimeout(resolve, 1000));
         res.status(401).json({ error: 'Invalid credentials' });
