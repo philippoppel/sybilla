@@ -136,6 +136,7 @@ class AdminPanel {
 
     logout() {
         sessionStorage.removeItem('admin_auth');
+        localStorage.removeItem('admin_auth'); // Also clear localStorage if used
         this.isAuthenticated = false;
         this.currentUser = '';
         this.showLoginForm();
