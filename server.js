@@ -10,6 +10,36 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const SECRET_KEY = process.env.SECRET_KEY || 'your-secret-key-here';
 const GIT_ENABLED = process.env.GIT_ENABLED === 'true';
+const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+const ADMIN_PASS = process.env.ADMIN_PASS;
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// Security: Require admin password in production
+if (NODE_ENV === 'production' && !ADMIN_PASS) {
+    console.error('ERROR: ADMIN_PASS environment variable is required in production!');
+    process.exit(1);
+}
+
+if (NODE_ENV === 'production' && (!SECRET_KEY || SECRET_KEY === 'your-secret-key-here')) {
+    console.error('ERROR: SECRET_KEY environment variable is required in production!');
+    process.exit(1);
+}
+
+// Security headers
+app.use((req, res, next) => {
+    // Security headers
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    
+    // HTTPS redirect in production
+    if (NODE_ENV === 'production' && req.header('x-forwarded-proto') !== 'https') {
+        return res.redirect(`https://${req.header('host')}${req.url}`);
+    }
+    
+    next();
+});
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));
@@ -19,10 +49,10 @@ app.use(express.static('.'));
 const rateLimiter = new Map();
 
 function rateLimit(req, res, next) {
-    const ip = req.ip;
+    const ip = req.ip || req.connection.remoteAddress;
     const now = Date.now();
     const windowMs = 15 * 60 * 1000; // 15 minutes
-    const maxRequests = 10;
+    const maxRequests = NODE_ENV === 'production' ? 5 : 10; // Stricter in production
 
     if (!rateLimiter.has(ip)) {
         rateLimiter.set(ip, []);
@@ -50,12 +80,30 @@ function authenticate(req, res, next) {
     const token = auth.slice(7);
     
     try {
-        // Simple token validation (in production, use proper JWT)
-        const decoded = Buffer.from(token, 'base64').toString();
+        // JWT-like token validation with HMAC
+        const [payload, signature] = token.split('.');
+        if (!payload || !signature) {
+            return res.status(401).json({ error: 'Invalid token format' });
+        }
+        
+        // Verify signature
+        const expectedSignature = crypto
+            .createHmac('sha256', SECRET_KEY)
+            .update(payload)
+            .digest('base64url');
+            
+        if (signature !== expectedSignature) {
+            return res.status(401).json({ error: 'Invalid token signature' });
+        }
+        
+        const decoded = Buffer.from(payload, 'base64url').toString();
         const [username, password, timestamp] = decoded.split(':');
         
         // Check credentials
-        if (username !== 'sybilla' || password !== 'secret') {
+        const expectedUser = ADMIN_USER;
+        const expectedPass = ADMIN_PASS || 'secret'; // Fallback for development
+        
+        if (username !== expectedUser || password !== expectedPass) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
         
@@ -131,11 +179,23 @@ app.get('/api/health', (req, res) => {
 app.post('/api/auth', rateLimit, (req, res) => {
     const { username, password } = req.body;
     
-    if (username === 'sybilla' && password === 'secret') {
-        // Create simple token
+    // Input validation
+    if (!username || !password || username.length > 50 || password.length > 100) {
+        return res.status(400).json({ error: 'Invalid input' });
+    }
+    
+    const expectedUser = ADMIN_USER;
+    const expectedPass = ADMIN_PASS || 'secret'; // Fallback for development
+    
+    if (username === expectedUser && password === expectedPass) {
+        // Create secure token with HMAC signature
         const timestamp = Date.now();
-        const tokenData = `${username}:${password}:${timestamp}`;
-        const token = Buffer.from(tokenData).toString('base64');
+        const payload = Buffer.from(`${username}:${password}:${timestamp}`).toString('base64url');
+        const signature = crypto
+            .createHmac('sha256', SECRET_KEY)
+            .update(payload)
+            .digest('base64url');
+        const token = `${payload}.${signature}`;
         
         res.json({
             success: true,
@@ -144,7 +204,10 @@ app.post('/api/auth', rateLimit, (req, res) => {
             expiresIn: '2h'
         });
     } else {
-        res.status(401).json({ error: 'Invalid credentials' });
+        // Add delay to prevent brute force
+        setTimeout(() => {
+            res.status(401).json({ error: 'Invalid credentials' });
+        }, 1000);
     }
 });
 
