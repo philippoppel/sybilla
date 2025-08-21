@@ -17,7 +17,9 @@ export default async function handler(req, res) {
             ADMIN_PASS_LENGTH: process.env.ADMIN_PASS ? process.env.ADMIN_PASS.length : 0,
             ADMIN_PASS_FIRST_CHAR: process.env.ADMIN_PASS ? process.env.ADMIN_PASS[0] : 'N/A',
             SECRET_KEY_LENGTH: process.env.SECRET_KEY ? process.env.SECRET_KEY.length : 0,
-            GIT_ENABLED: process.env.GIT_ENABLED
+            GIT_ENABLED: process.env.GIT_ENABLED,
+            GITHUB_TOKEN_LENGTH: process.env.GITHUB_TOKEN ? process.env.GITHUB_TOKEN.length : 0,
+            GITHUB_REPO: process.env.GITHUB_REPO || 'NOT_SET'
         },
         timestamp: new Date().toISOString()
     });
