@@ -1,19 +1,43 @@
 {
-  "functions": {
-    "api/auth.js": {
-      "runtime": "nodejs18.x"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
     },
-    "api/content.js": {
-      "runtime": "nodejs18.x"
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
     },
-    "api/publish.js": {
-      "runtime": "nodejs18.x"
+    {
+      "src": "*.js",
+      "use": "@vercel/static"
     },
-    "api/health.js": {
-      "runtime": "nodejs18.x"
+    {
+      "src": "*.json",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.png",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.jpg",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.jpeg",
+      "use": "@vercel/static"
     }
-  },
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    }
+  ]
 }
