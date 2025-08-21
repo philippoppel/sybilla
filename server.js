@@ -103,7 +103,7 @@ async function executeGitCommands(message) {
         const commands = [
             'git add .',
             `git commit -m "${message}"`,
-            'git push origin main'
+            'git push origin master'
         ];
         
         const fullCommand = commands.join(' && ');
