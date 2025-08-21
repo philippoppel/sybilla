@@ -11,8 +11,8 @@ const rateLimiter = new Map();
 function rateLimit(req) {
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const now = Date.now();
-    const windowMs = 15 * 60 * 1000; // 15 minutes
-    const maxRequests = 5;
+    const windowMs = 5 * 60 * 1000; // 5 minutes (reduced from 15)
+    const maxRequests = 10; // Increased from 5
 
     if (!rateLimiter.has(ip)) {
         rateLimiter.set(ip, []);
@@ -56,14 +56,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Invalid input' });
     }
     
-    // Debug logging
-    console.log('Auth attempt:', { 
-        username, 
-        password: password ? 'PROVIDED' : 'MISSING',
-        ADMIN_USER,
-        ADMIN_PASS: ADMIN_PASS ? 'SET' : 'MISSING',
-        SECRET_KEY: SECRET_KEY ? 'SET' : 'MISSING'
-    });
+    // Removed debug logging for production
     
     if (username === ADMIN_USER && password === ADMIN_PASS) {
         // Create secure token with HMAC signature
@@ -82,18 +75,10 @@ export default async function handler(req, res) {
             expiresIn: '2h'
         });
     } else {
-        // Debug logging for failed attempts
-        console.log('Login failed - credential mismatch:', {
-            providedUser: username,
-            expectedUser: ADMIN_USER,
-            userMatch: username === ADMIN_USER,
-            providedPassLength: password ? password.length : 0,
-            expectedPassLength: ADMIN_PASS ? ADMIN_PASS.length : 0,
-            passMatch: password === ADMIN_PASS
-        });
+        // Removed debug logging for production
         
-        // Add delay to prevent brute force
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Add delay to prevent brute force (reduced from 1000ms)
+        await new Promise(resolve => setTimeout(resolve, 500));
         res.status(401).json({ error: 'Invalid credentials' });
     }
 }
