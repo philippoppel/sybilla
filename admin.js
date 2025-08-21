@@ -67,12 +67,18 @@ class AdminPanel {
     checkAuth() {
         const authData = sessionStorage.getItem('admin_auth');
         if (authData) {
-            const auth = JSON.parse(authData);
-            if (auth.timestamp > Date.now() - (2 * 60 * 60 * 1000)) { // 2 hours
-                this.isAuthenticated = true;
-                this.currentUser = auth.username;
-                this.showAdminPanel();
-                return;
+            try {
+                const auth = JSON.parse(authData);
+                // Check if token exists and is not expired
+                if (auth.token && auth.expires && Date.now() < auth.expires) {
+                    this.isAuthenticated = true;
+                    this.currentUser = auth.username;
+                    this.showAdminPanel();
+                    return;
+                }
+            } catch (e) {
+                // Invalid auth data, remove it
+                sessionStorage.removeItem('admin_auth');
             }
         }
         this.showLoginForm();
@@ -96,10 +102,12 @@ class AdminPanel {
                 this.isAuthenticated = true;
                 this.currentUser = result.user;
                 
-                // Store auth token
+                // Store auth token with proper expiration
+                const expires = Date.now() + (2 * 60 * 60 * 1000); // 2 hours from now
                 sessionStorage.setItem('admin_auth', JSON.stringify({
                     token: result.token,
                     username: result.user,
+                    expires: expires,
                     timestamp: Date.now()
                 }));
                 

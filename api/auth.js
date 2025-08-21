@@ -59,20 +59,27 @@ export default async function handler(req, res) {
     // Removed debug logging for production
     
     if (username === ADMIN_USER && password === ADMIN_PASS) {
-        // Create secure token with HMAC signature
+        // Create simple but secure token
         const timestamp = Date.now();
-        const payload = Buffer.from(`${username}:${password}:${timestamp}`).toString('base64url');
-        const signature = crypto
+        const tokenData = {
+            user: username,
+            timestamp: timestamp,
+            expires: timestamp + (2 * 60 * 60 * 1000) // 2 hours
+        };
+        
+        // Simple encryption with SECRET_KEY
+        const tokenString = JSON.stringify(tokenData);
+        const token = crypto
             .createHmac('sha256', SECRET_KEY)
-            .update(payload)
-            .digest('base64url');
-        const token = `${payload}.${signature}`;
+            .update(tokenString)
+            .digest('hex') + '.' + Buffer.from(tokenString).toString('base64');
         
         res.json({
             success: true,
             token: token,
             user: username,
-            expiresIn: '2h'
+            expiresIn: '2h',
+            timestamp: timestamp
         });
     } else {
         // Removed debug logging for production

@@ -16,30 +16,32 @@ function authenticate(req) {
     const token = auth.slice(7);
     
     try {
-        const [payload, signature] = token.split('.');
-        if (!payload || !signature) {
+        const [signature, payload] = token.split('.');
+        if (!signature || !payload) {
             return false;
         }
+        
+        // Decode the token data
+        const tokenString = Buffer.from(payload, 'base64').toString();
+        const tokenData = JSON.parse(tokenString);
         
         // Verify signature
         const expectedSignature = crypto
             .createHmac('sha256', SECRET_KEY)
-            .update(payload)
-            .digest('base64url');
+            .update(tokenString)
+            .digest('hex');
             
         if (signature !== expectedSignature) {
             return false;
         }
         
-        const decoded = Buffer.from(payload, 'base64url').toString();
-        const [username, password, timestamp] = decoded.split(':');
-        
-        // Check credentials and timestamp
-        if (username !== ADMIN_USER || password !== ADMIN_PASS) {
+        // Check if token is expired
+        if (Date.now() > tokenData.expires) {
             return false;
         }
         
-        if (Date.now() - parseInt(timestamp) > 2 * 60 * 60 * 1000) {
+        // Check user
+        if (tokenData.user !== ADMIN_USER) {
             return false;
         }
         
