@@ -60,6 +60,11 @@ class AdminPanel {
         document.getElementById('addTestimonialBtn').addEventListener('click', () => {
             this.addTestimonial();
         });
+
+        // Test API button
+        document.getElementById('testApiBtn').addEventListener('click', () => {
+            this.testAPI();
+        });
     }
 
     checkAuth() {
@@ -80,6 +85,8 @@ class AdminPanel {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         
+        console.log('Attempting login with:', { username, password: '***' });
+        
         try {
             const response = await fetch('/api/auth.js', {
                 method: 'POST',
@@ -89,8 +96,12 @@ class AdminPanel {
                 body: JSON.stringify({ username, password })
             });
 
+            console.log('Response status:', response.status);
+            console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
             if (response.ok) {
                 const result = await response.json();
+                console.log('Login successful:', result);
                 this.isAuthenticated = true;
                 this.currentUser = result.user;
                 
@@ -104,12 +115,19 @@ class AdminPanel {
                 this.showAdminPanel();
                 this.showStatus('Erfolgreich angemeldet!', 'success');
             } else {
-                const error = await response.json();
-                this.showError(error.error || 'Anmeldung fehlgeschlagen');
+                let errorText;
+                try {
+                    const error = await response.json();
+                    errorText = error.error || 'Anmeldung fehlgeschlagen';
+                } catch (e) {
+                    errorText = await response.text();
+                }
+                console.error('Login failed:', { status: response.status, error: errorText });
+                this.showError(`Login failed (${response.status}): ${errorText}`);
             }
         } catch (error) {
             console.error('Login error:', error);
-            this.showError('Verbindungsfehler');
+            this.showError(`Verbindungsfehler: ${error.message}`);
         }
     }
 
@@ -545,6 +563,47 @@ class AdminPanel {
         });
         
         return testimonials;
+    }
+
+    async testAPI() {
+        console.log('Testing API endpoints...');
+        
+        try {
+            // Test health endpoint
+            const healthResponse = await fetch('/api/health.js');
+            const healthData = await healthResponse.json();
+            console.log('Health check:', healthData);
+            
+            // Test auth with current form data
+            const username = document.getElementById('username').value || 'sybilla-admin';
+            const password = document.getElementById('password').value || 'SybillaSecure2024';
+            
+            console.log('Testing auth with:', { username, password: '***' });
+            
+            const authResponse = await fetch('/api/auth.js', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+            
+            console.log('Auth response status:', authResponse.status);
+            
+            if (authResponse.ok) {
+                const authData = await authResponse.json();
+                console.log('Auth success:', authData);
+                alert('API Test SUCCESSFUL! Check console for details.');
+            } else {
+                const errorData = await authResponse.text();
+                console.error('Auth failed:', errorData);
+                alert(`API Test FAILED: ${authResponse.status} - ${errorData}`);
+            }
+            
+        } catch (error) {
+            console.error('API Test Error:', error);
+            alert(`API Test ERROR: ${error.message}`);
+        }
     }
 }
 
