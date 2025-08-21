@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Sybilla Sedlar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .admin-hidden { display: none; }
+        .admin-visible { display: block; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Login Form -->
+    <div id="loginForm" class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+            <div class="text-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">Admin Login</h1>
+                <p class="text-gray-600 mt-2">Zugang zum Content Management</p>
+            </div>
+            <form id="adminLogin" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Benutzername</label>
+                    <input type="text" id="username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Passwort</label>
+                    <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
+                    Anmelden
+                </button>
+            </form>
+            <div id="loginError" class="mt-4 text-red-600 text-sm hidden"></div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-hidden">
+        <nav class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-bold text-gray-900">Content Management</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-600">Angemeldet als: <strong id="currentUser"></strong></span>
+                        <button id="logoutBtn" class="text-sm text-red-600 hover:text-red-800">Abmelden</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <!-- Tabs -->
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="-mb-px flex space-x-8">
+                    <button class="tab-btn border-b-2 border-blue-500 py-2 px-1 text-sm font-medium text-blue-600" data-tab="hero">Hero Bereich</button>
+                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="about">Über mich</button>
+                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="services">Leistungen</button>
+                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="testimonials">Kundenstimmen</button>
+                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="contact">Kontakt</button>
+                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="images">Bilder</button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tabContent">
+                <!-- Hero Tab -->
+                <div id="hero-tab" class="tab-content">
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Hero Bereich bearbeiten</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Haupttitel</label>
+                                <input type="text" id="heroTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Untertitel</label>
+                                <textarea id="heroSubtitle" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                                <input type="text" id="heroButtonText" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Tab -->
+                <div id="about-tab" class="tab-content hidden">
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Über mich bearbeiten</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                <input type="text" id="aboutName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Beschreibung 1</label>
+                                <textarea id="aboutDesc1" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Beschreibung 2</label>
+                                <textarea id="aboutDesc2" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Tab -->
+                <div id="services-tab" class="tab-content hidden">
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Leistungen bearbeiten</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Haupttitel</label>
+                                <input type="text" id="servicesTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Untertitel</label>
+                                <textarea id="servicesSubtitle" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+                            <div id="servicesContainer">
+                                <h3 class="text-md font-medium text-gray-900 mb-3">Leistungen</h3>
+                                <div id="servicesList"></div>
+                                <button type="button" id="addServiceBtn" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                    Neue Leistung hinzufügen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonials Tab -->
+                <div id="testimonials-tab" class="tab-content hidden">
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Kundenstimmen bearbeiten</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Haupttitel</label>
+                                <input type="text" id="testimonialsTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Untertitel</label>
+                                <textarea id="testimonialsSubtitle" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+                            <div id="testimonialsContainer">
+                                <h3 class="text-md font-medium text-gray-900 mb-3">Kundenstimmen</h3>
+                                <div id="testimonialsList"></div>
+                                <button type="button" id="addTestimonialBtn" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                    Neue Kundenstimme hinzufügen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Tab -->
+                <div id="contact-tab" class="tab-content hidden">
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Kontakt Einstellungen</h2>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="contactEnabled" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="contactEnabled" class="ml-2 block text-sm text-gray-900">Kontaktformular aktiviert</label>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Beschreibungstext</label>
+                                <textarea id="contactDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Images Tab -->
+                <div id="images-tab" class="tab-content hidden">
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Bilder verwalten</h2>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Hero Hintergrundbild</label>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                    <input type="file" id="heroImageUpload" accept="image/*" class="hidden">
+                                    <div id="heroImageContainer" class="mb-4">
+                                        <img id="heroImagePreview" class="mx-auto max-h-32 rounded object-cover">
+                                        <p id="heroImagePath" class="text-xs text-gray-600 mt-2"></p>
+                                    </div>
+                                    <button type="button" onclick="document.getElementById('heroImageUpload').click()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                        Bild ändern
+                                    </button>
+                                    <p class="text-xs text-gray-500 mt-2">PNG, JPG bis zu 10MB</p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Profilbild</label>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                    <input type="file" id="profileImageUpload" accept="image/*" class="hidden">
+                                    <div id="profileImageContainer" class="mb-4">
+                                        <img id="profileImagePreview" class="mx-auto max-h-32 rounded-full object-cover">
+                                        <p id="profileImagePath" class="text-xs text-gray-600 mt-2"></p>
+                                    </div>
+                                    <button type="button" onclick="document.getElementById('profileImageUpload').click()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                        Bild ändern
+                                    </button>
+                                    <p class="text-xs text-gray-500 mt-2">PNG, JPG bis zu 10MB</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Buttons -->
+            <div class="mt-6 flex justify-end space-x-3">
+                <button id="saveBtn" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors">
+                    Änderungen speichern
+                </button>
+                <button id="publishBtn" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                    Veröffentlichen
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Messages -->
+        <div id="statusMessage" class="fixed bottom-4 right-4 hidden">
+            <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm">
+                <div class="flex items-center">
+                    <div id="statusIcon" class="flex-shrink-0 w-5 h-5 mr-3"></div>
+                    <div id="statusText" class="text-sm font-medium text-gray-900"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

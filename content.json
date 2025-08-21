@@ -1,0 +1,66 @@
+{
+  "site": {
+    "title": "Sybilla Sedlar | Interim-Finanzmanagement & Prozessoptimierung",
+    "description": "Erfahrene Interim-Finanzmanagerin Sybilla Sedlar unterstützt Ihr Unternehmen bei Vakanzüberbrückung, SAP-Implementierung und Prozessoptimierung.",
+    "author": "Sybilla Sedlar"
+  },
+  "hero": {
+    "title": "Klarheit und Struktur für Ihre Finanzen!",
+    "subtitle": "Als Ihre Interim-Managerin im Finanzbereich sorge ich für Stabilität, optimiere Prozesse und überbrücke Vakanzen – professionell, flexibel und lösungsorientiert.",
+    "buttonText": "Meine Leistungen entdecken",
+    "backgroundImage": "./hero-image.jpeg"
+  },
+  "about": {
+    "title": "Über mich",
+    "subtitle": "Ihre Expertin für Finanzen auf Zeit.",
+    "name": "Mag. (FH) Sybilla Sedlar",
+    "description1": "Mit über einem Jahrzehnt Berufserfahrung in internationalen Konzernumgebungen und als selbstständige Interim-Managerin biete ich eine einzigartige Kombination aus strategischem Weitblick und operativer Hands-on-Mentalität. <strong>Mein Ziel: nahtlose Integration in Ihr Unternehmen und messbarer Mehrwert ab dem ersten Tag.</strong>",
+    "description2": "Nach fünf Jahren als Einkaufsmanagerin bei Estée Lauder, wo ich komplexe Finanzprozesse in einem dynamischen Marktumfeld managte, habe ich mich auf Interim-Management spezialisiert. Mein Abschluss in Unternehmensführung (FH des BFI Wien) und die praktische Erfahrung in über 20 erfolgreichen Projekten ermöglichen es mir, auch in kritischen Situationen schnell und effektiv zu handeln.",
+    "profileImage": "./logo.png"
+  },
+  "services": {
+    "title": "Leistungen",
+    "subtitle": "Maßgeschneiderte Unterstützung für Ihre finanzielle Stabilität und Effizienz.",
+    "items": [
+      {
+        "title": "Interim-Finanzmanagement",
+        "description": "Ich überbrücke personelle Vakanzen im Finanzbereich – kurzfristig, zuverlässig und mit der Kompetenz, operative und strategische Aufgaben bis zur Rohbilanz sofort zu übernehmen."
+      },
+      {
+        "title": "Prozessoptimierung & SAP",
+        "description": "Ich analysiere Ihre bestehenden Finanzprozesse, identifiziere Potenziale und implementiere effiziente Lösungen. Ein besonderer Fokus liegt auf der Arbeit mit SAP-Systemen wie <strong>SAP Concur</strong> und <strong>SAP HANA</strong>."
+      },
+      {
+        "title": "Teamführung & Schulung",
+        "description": "Ich übernehme die operative Führung von Finanzteams und sorge für Motivation und klare Ziele. Zudem berate und schule ich Ihre Mitarbeiter in Buchhaltungsthemen und neuen Finanzprozessen."
+      }
+    ]
+  },
+  "testimonials": {
+    "title": "Kundenstimmen",
+    "subtitle": "Was meine Partner über die Zusammenarbeit sagen.",
+    "items": [
+      {
+        "text": "Als unsere langjährige Finanzleiterin unerwartet ausfiel, konnte Frau Sedlar innerhalb von 48 Stunden einspringen. Ihre strukturierte Herangehensweise und tiefe SAP-Kenntnisse haben uns durch eine kritische Quartalsabschlussphase geführt.",
+        "author": "Dr. Andreas Bauer",
+        "position": "Geschäftsführer, Innovations GmbH"
+      },
+      {
+        "text": "Die Implementierung von SAP Concur schien zunächst ein unlösbares Problem. Frau Sedlar hat nicht nur die technische Umsetzung gemeistert, sondern auch unser Team erfolgreich geschult. Heute sparen wir 40% Zeit bei der Reisekostenabrechnung.",
+        "author": "Mag. Julia Schneider",
+        "position": "HR-Leiterin, Produktions AG"
+      },
+      {
+        "text": "In nur 3 Monaten hat Frau Sedlar unsere Abschlussprozesse von Grund auf optimiert. Die Effizienzsteigerung von 40% spricht für sich. Ihre Kombination aus fachlicher Expertise und empathischer Führung hat unser Team nachhaltig gestärkt.",
+        "author": "Thomas Huber",
+        "position": "CFO, Digital Solutions GmbH"
+      }
+    ]
+  },
+  "contact": {
+    "title": "Kontakt",
+    "subtitle": "Lassen Sie uns über Ihr nächstes Projekt sprechen.",
+    "enabled": true,
+    "formDescription": "Füllen Sie das Formular aus und ich werde mich binnen 24 Stunden bei Ihnen melden, um die Details Ihres Anliegens vertraulich zu besprechen."
+  }
+}
