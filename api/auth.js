@@ -56,6 +56,15 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Invalid input' });
     }
     
+    // Debug logging
+    console.log('Auth attempt:', { 
+        username, 
+        password: password ? 'PROVIDED' : 'MISSING',
+        ADMIN_USER,
+        ADMIN_PASS: ADMIN_PASS ? 'SET' : 'MISSING',
+        SECRET_KEY: SECRET_KEY ? 'SET' : 'MISSING'
+    });
+    
     if (username === ADMIN_USER && password === ADMIN_PASS) {
         // Create secure token with HMAC signature
         const timestamp = Date.now();
