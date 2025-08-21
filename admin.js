@@ -81,7 +81,7 @@ class AdminPanel {
         const password = document.getElementById('password').value;
         
         try {
-            const response = await fetch('/api/auth', {
+            const response = await fetch('/api/auth.js', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -145,7 +145,7 @@ class AdminPanel {
         try {
             let response;
             if (this.isAuthenticated) {
-                response = await fetch('/api/content', {
+                response = await fetch('/api/content.js', {
                     headers: {
                         'Authorization': `Bearer ${this.getAuthToken()}`
                     }
@@ -257,7 +257,7 @@ class AdminPanel {
         try {
             const updatedContent = this.collectFormData();
             
-            const response = await fetch('/api/content', {
+            const response = await fetch('/api/content.js', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -286,7 +286,7 @@ class AdminPanel {
             
             this.showStatus('Veröffentlichung wird vorbereitet...', 'info');
             
-            const response = await fetch('/api/publish', {
+            const response = await fetch('/api/publish.js', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
