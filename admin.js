@@ -299,33 +299,31 @@ class AdminPanel {
 
     async publishChanges() {
         try {
-            // First save changes
-            await this.saveChanges();
+            const updatedContent = this.collectFormData();
             
             this.showStatus('Veröffentlichung wird vorbereitet...', 'info');
             
-            const response = await fetch('/api/publish.js', {
+            const response = await fetch('/api/github-publish.js', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.getAuthToken()}`
                 },
                 body: JSON.stringify({
-                    message: 'Content update via admin panel'
+                    content: updatedContent,
+                    message: 'Content update via admin panel 🚀'
                 })
             });
 
             if (response.ok) {
                 const result = await response.json();
-                if (result.deployed) {
-                    this.showStatus('Erfolgreich veröffentlicht! Seite wird in wenigen Minuten aktualisiert.', 'success');
+                if (result.success && result.deployed) {
+                    this.showStatus('🚀 Erfolgreich auf GitHub veröffentlicht! Vercel deployt automatisch in ~2 Minuten.', 'success');
+                    this.content = updatedContent; // Update local content
+                } else if (result.success) {
+                    this.showStatus(result.message || 'Änderungen verarbeitet', 'info');
                 } else {
-                    this.showStatus('Änderungen gespeichert (Deployment deaktiviert)', 'info');
-                }
-                
-                // Reload the main site content
-                if (window.reloadContent) {
-                    setTimeout(() => window.reloadContent(), 1000);
+                    this.showStatus(result.message || 'Veröffentlichung nicht möglich', 'warning');
                 }
             } else {
                 const error = await response.json();
