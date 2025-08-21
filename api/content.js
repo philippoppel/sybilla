@@ -89,9 +89,9 @@ export default async function handler(req, res) {
         }
         
         try {
-            const contentPath = path.join(process.cwd(), 'content.json');
-            const content = await fs.readFile(contentPath, 'utf8');
-            res.json(JSON.parse(content));
+            // In serverless, read from the bundled content
+            const content = require('../content.json');
+            res.json(content);
         } catch (error) {
             console.error('Error reading content:', error);
             res.status(500).json({ error: 'Could not read content' });
@@ -111,30 +111,23 @@ export default async function handler(req, res) {
                 return res.status(400).json({ error: 'Invalid content structure' });
             }
             
-            // Backup current content
+            // In serverless environment, we can't write files
+            // Instead, we'll return the content for client-side handling
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-            const contentPath = path.join(process.cwd(), 'content.json');
             
-            try {
-                const currentContent = await fs.readFile(contentPath, 'utf8');
-                const backupPath = path.join(process.cwd(), `content-backup-${timestamp}.json`);
-                await fs.writeFile(backupPath, currentContent);
-            } catch (backupError) {
-                console.warn('Could not create backup:', backupError);
-            }
-            
-            // Write new content
-            await fs.writeFile(contentPath, JSON.stringify(newContent, null, 2));
+            // For now, just return success - actual file writing needs to be done differently
+            console.log('Content update requested:', { timestamp, contentKeys: Object.keys(newContent) });
             
             res.json({ 
                 success: true, 
-                message: 'Content updated successfully',
-                timestamp: timestamp
+                message: 'Content validated and ready for update',
+                timestamp: timestamp,
+                note: 'Serverless environment - content update requires deployment'
             });
             
         } catch (error) {
-            console.error('Error updating content:', error);
-            res.status(500).json({ error: 'Could not update content' });
+            console.error('Error processing content:', error);
+            res.status(500).json({ error: 'Could not process content update' });
         }
     }
     

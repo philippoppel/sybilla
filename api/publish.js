@@ -92,25 +92,19 @@ export default async function handler(req, res) {
     try {
         const { message = 'Update content via admin panel' } = req.body;
         
-        if (GIT_ENABLED) {
-            await executeGitCommands(message);
-            res.json({ 
-                success: true, 
-                message: 'Content published and deployed successfully',
-                deployed: true
-            });
-        } else {
-            res.json({ 
-                success: true, 
-                message: 'Content updated (Git deployment disabled)',
-                deployed: false
-            });
-        }
+        // In serverless environment, Git is not available
+        // Publishing needs to be handled differently
+        res.json({ 
+            success: true, 
+            message: 'Content changes noted. In serverless environment, publishing requires manual deployment or webhook integration.',
+            deployed: false,
+            note: 'Serverless limitation: Git commands not available. Consider using GitHub API or webhooks for automated publishing.'
+        });
         
     } catch (error) {
-        console.error('Error publishing:', error);
+        console.error('Error in publish endpoint:', error);
         res.status(500).json({ 
-            error: 'Could not publish content', 
+            error: 'Could not process publish request', 
             details: error.message 
         });
     }
