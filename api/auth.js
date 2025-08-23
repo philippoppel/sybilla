@@ -44,12 +44,45 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
+    // Check for missing environment variables and debug
+    if (!SECRET_KEY || !ADMIN_PASS) {
+        console.error('Missing environment variables:', { 
+            SECRET_KEY: !!SECRET_KEY, 
+            ADMIN_PASS: !!ADMIN_PASS,
+            ADMIN_USER: !!ADMIN_USER,
+            env_keys: Object.keys(process.env).filter(k => k.includes('ADMIN') || k.includes('SECRET'))
+        });
+        return res.status(500).json({ 
+            error: 'Server configuration error',
+            debug: {
+                SECRET_KEY: !!SECRET_KEY,
+                ADMIN_PASS: !!ADMIN_PASS,
+                ADMIN_USER: !!ADMIN_USER
+            }
+        });
+    }
+
     // Rate limiting
     if (!rateLimit(req)) {
         return res.status(429).json({ error: 'Too many requests' });
     }
 
-    const { username, password } = req.body;
+    // Parse request body if needed
+    let body = req.body;
+    if (typeof body === 'string') {
+        try {
+            body = JSON.parse(body);
+        } catch (e) {
+            return res.status(400).json({ error: 'Invalid JSON' });
+        }
+    }
+
+    // Validate request body exists
+    if (!body) {
+        return res.status(400).json({ error: 'Request body required' });
+    }
+
+    const { username, password } = body;
     
     // Input validation
     if (!username || !password || username.length > 50 || password.length > 100) {
@@ -58,7 +91,20 @@ export default async function handler(req, res) {
     
     // Removed debug logging for production
     
-    if (username === ADMIN_USER && password === ADMIN_PASS) {
+    // Debug: log what we're comparing (remove in production)
+    console.log('Auth attempt:', { 
+        provided_user: username, 
+        expected_user: ADMIN_USER,
+        password_provided: !!password,
+        password_expected: !!ADMIN_PASS,
+        match: username === ADMIN_USER && password === ADMIN_PASS
+    });
+    
+    // Fallback for testing if env vars are not properly set
+    const testUser = ADMIN_USER || 'admin';
+    const testPass = ADMIN_PASS || 'cms2024';
+    
+    if (username === testUser && password === testPass) {
         // Create simple but secure token
         const timestamp = Date.now();
         const tokenData = {
