@@ -69,16 +69,22 @@ class AdminPanel {
         if (authData) {
             try {
                 const auth = JSON.parse(authData);
-                // Check if token exists and is not expired
-                if (auth.token && auth.expires && Date.now() < auth.expires) {
+                // Check if token exists and is not expired (with 5 minute buffer)
+                const buffer = 5 * 60 * 1000; // 5 minutes
+                if (auth.token && auth.expires && (Date.now() + buffer) < auth.expires) {
                     this.isAuthenticated = true;
                     this.currentUser = auth.username;
+                    this.cachedToken = auth.token;
                     this.showAdminPanel();
                     return;
+                } else if (auth.token) {
+                    // Token exists but is expired or about to expire
+                    console.log('Token expired or about to expire, clearing auth');
+                    this.clearAuthData();
                 }
             } catch (e) {
-                // Invalid auth data, remove it
-                sessionStorage.removeItem('admin_auth');
+                console.error('Invalid auth data:', e);
+                this.clearAuthData();
             }
         }
         this.showLoginForm();
@@ -88,44 +94,64 @@ class AdminPanel {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         
+        // Clear any existing auth data before login attempt
+        this.clearAuthData();
+        
         try {
-            const response = await fetch('/api/auth.js', {
+            // Try serverless endpoint first, then local server endpoint
+            let response = await fetch('/api/auth.js', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ username, password })
             });
+            
+            // If serverless returns 404, try local server endpoint
+            if (response.status === 404) {
+                response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+            }
 
             if (response.ok) {
                 const result = await response.json();
                 this.isAuthenticated = true;
                 this.currentUser = result.user;
                 
-                // Store auth token with proper expiration
-                const expires = Date.now() + (2 * 60 * 60 * 1000); // 2 hours from now
-                sessionStorage.setItem('admin_auth', JSON.stringify({
+                // Store auth token with server-provided expiration
+                const expires = (result.timestamp || Date.now()) + (2 * 60 * 60 * 1000);
+                const authData = {
                     token: result.token,
                     username: result.user,
                     expires: expires,
-                    timestamp: Date.now()
-                }));
+                    timestamp: result.timestamp || Date.now()
+                };
+                
+                sessionStorage.setItem('admin_auth', JSON.stringify(authData));
                 
                 this.showAdminPanel();
                 this.showStatus('Erfolgreich angemeldet!', 'success');
+                
+                // Reload content with authenticated session
+                await this.loadContent();
             } else {
-                let errorText;
+                let errorText = 'Anmeldung fehlgeschlagen';
                 try {
                     const error = await response.json();
-                    errorText = error.error || 'Anmeldung fehlgeschlagen';
+                    errorText = error.error || errorText;
                 } catch (e) {
-                    errorText = await response.text();
+                    // Use default error message if JSON parsing fails
                 }
                 
                 if (response.status === 429) {
                     this.showError('Zu viele Login-Versuche. Bitte warten Sie 5 Minuten.');
                 } else {
-                    this.showError(errorText || 'Anmeldung fehlgeschlagen');
+                    this.showError(errorText);
                 }
             }
         } catch (error) {
@@ -135,12 +161,21 @@ class AdminPanel {
     }
 
     logout() {
-        sessionStorage.removeItem('admin_auth');
-        localStorage.removeItem('admin_auth'); // Also clear localStorage if used
+        this.clearAuthData();
         this.isAuthenticated = false;
         this.currentUser = '';
+        this.content = {}; // Clear content data
         this.showLoginForm();
         this.showStatus('Erfolgreich abgemeldet', 'info');
+    }
+    
+    clearAuthData() {
+        // Clear all possible storage locations
+        sessionStorage.removeItem('admin_auth');
+        localStorage.removeItem('admin_auth');
+        
+        // Clear any cached headers or tokens
+        delete this.cachedToken;
     }
 
     showLoginForm() {
@@ -167,11 +202,21 @@ class AdminPanel {
         try {
             let response;
             if (this.isAuthenticated) {
+                // Try serverless endpoint first, then local server endpoint
                 response = await fetch('/api/content.js', {
                     headers: {
                         'Authorization': `Bearer ${this.getAuthToken()}`
                     }
                 });
+                
+                // If serverless returns 404, try local server endpoint
+                if (response.status === 404) {
+                    response = await fetch('/api/content', {
+                        headers: {
+                            'Authorization': `Bearer ${this.getAuthToken()}`
+                        }
+                    });
+                }
             } else {
                 response = await fetch('content.json');
             }
@@ -185,10 +230,29 @@ class AdminPanel {
     }
 
     getAuthToken() {
+        // Use cached token if available and valid
+        if (this.cachedToken) {
+            return this.cachedToken;
+        }
+        
         const authData = sessionStorage.getItem('admin_auth');
         if (authData) {
-            const auth = JSON.parse(authData);
-            return auth.token;
+            try {
+                const auth = JSON.parse(authData);
+                // Verify token is still valid before using
+                if (auth.token && auth.expires && Date.now() < auth.expires) {
+                    this.cachedToken = auth.token;
+                    return auth.token;
+                } else {
+                    // Token expired, clear auth and return null
+                    this.clearAuthData();
+                    this.isAuthenticated = false;
+                    this.showLoginForm();
+                }
+            } catch (e) {
+                console.error('Error parsing auth data:', e);
+                this.clearAuthData();
+            }
         }
         return null;
     }
@@ -276,24 +340,53 @@ class AdminPanel {
     }
 
     async saveChanges() {
+        const token = this.getAuthToken();
+        if (!token) {
+            this.showStatus('Session abgelaufen. Bitte loggen Sie sich erneut ein.', 'error');
+            this.logout();
+            return;
+        }
+        
         try {
             const updatedContent = this.collectFormData();
             
-            const response = await fetch('/api/content.js', {
+            // Try serverless endpoint first, then local server endpoint
+            let response = await fetch('/api/content.js', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.getAuthToken()}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(updatedContent)
             });
+            
+            // If serverless returns 404, try local server endpoint
+            if (response.status === 404) {
+                response = await fetch('/api/content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(updatedContent)
+                });
+            }
 
             if (response.ok) {
                 this.content = updatedContent;
                 this.showStatus('Änderungen gespeichert', 'success');
+            } else if (response.status === 401) {
+                this.showStatus('Session abgelaufen. Bitte loggen Sie sich erneut ein.', 'error');
+                this.logout();
             } else {
-                const error = await response.json();
-                throw new Error(error.error || 'Server error');
+                let errorMessage = 'Server error';
+                try {
+                    const error = await response.json();
+                    errorMessage = error.error || errorMessage;
+                } catch (e) {
+                    // Use default error message if JSON parsing fails
+                }
+                throw new Error(errorMessage);
             }
         } catch (error) {
             console.error('Error saving:', error);
@@ -302,36 +395,68 @@ class AdminPanel {
     }
 
     async publishChanges() {
+        const token = this.getAuthToken();
+        if (!token) {
+            this.showStatus('Session abgelaufen. Bitte loggen Sie sich erneut ein.', 'error');
+            this.logout();
+            return;
+        }
+        
         try {
             const updatedContent = this.collectFormData();
             
             this.showStatus('Veröffentlichung wird vorbereitet...', 'info');
             
-            const response = await fetch('/api/github-publish.js', {
+            // Try serverless endpoint first, then local server endpoint
+            let response = await fetch('/api/github-publish.js', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.getAuthToken()}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     content: updatedContent,
                     message: 'Content update via admin panel 🚀'
                 })
             });
+            
+            // If serverless returns 404, try local server endpoint
+            if (response.status === 404) {
+                response = await fetch('/api/publish', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        content: updatedContent,
+                        message: 'Content update via admin panel 🚀'
+                    })
+                });
+            }
 
             if (response.ok) {
                 const result = await response.json();
                 if (result.success && result.deployed) {
                     this.showStatus('🚀 Erfolgreich auf GitHub veröffentlicht! Vercel deployt automatisch in ~2 Minuten.', 'success');
-                    this.content = updatedContent; // Update local content
+                    this.content = updatedContent;
                 } else if (result.success) {
                     this.showStatus(result.message || 'Änderungen verarbeitet', 'info');
                 } else {
                     this.showStatus(result.message || 'Veröffentlichung nicht möglich', 'warning');
                 }
+            } else if (response.status === 401) {
+                this.showStatus('Session abgelaufen. Bitte loggen Sie sich erneut ein.', 'error');
+                this.logout();
             } else {
-                const error = await response.json();
-                throw new Error(error.error || 'Server error');
+                let errorMessage = 'Server error';
+                try {
+                    const error = await response.json();
+                    errorMessage = error.error || errorMessage;
+                } catch (e) {
+                    // Use default error message if JSON parsing fails
+                }
+                throw new Error(errorMessage);
             }
             
         } catch (error) {
@@ -444,13 +569,13 @@ class AdminPanel {
                 <div class="space-y-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Titel</label>
-                        <input type="text" class="service-title w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="${service.title || ''}">
+                        <input type="text" class="service-title w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="${service.title || ''}">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Beschreibung</label>
-                        <textarea class="service-description w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3">${service.description || ''}</textarea>
+                        <textarea class="service-description w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y" rows="3">${service.description || ''}</textarea>
                     </div>
-                    <button type="button" onclick="adminPanel.removeService(${index})" class="text-red-600 hover:text-red-800 text-sm">
+                    <button type="button" onclick="adminPanel.removeService(${index})" class="text-red-600 hover:text-red-800 text-sm font-medium px-2 py-1 rounded border border-red-200 hover:border-red-300 transition-colors">
                         Leistung entfernen
                     </button>
                 </div>
@@ -509,17 +634,17 @@ class AdminPanel {
                 <div class="space-y-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Zitat</label>
-                        <textarea class="testimonial-text w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3">${testimonial.text || ''}</textarea>
+                        <textarea class="testimonial-text w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y" rows="3">${testimonial.text || ''}</textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                        <input type="text" class="testimonial-author w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="${testimonial.author || ''}">
+                        <input type="text" class="testimonial-author w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="${testimonial.author || ''}">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Position</label>
-                        <input type="text" class="testimonial-position w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="${testimonial.position || ''}">
+                        <input type="text" class="testimonial-position w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="${testimonial.position || ''}">
                     </div>
-                    <button type="button" onclick="adminPanel.removeTestimonial(${index})" class="text-red-600 hover:text-red-800 text-sm">
+                    <button type="button" onclick="adminPanel.removeTestimonial(${index})" class="text-red-600 hover:text-red-800 text-sm font-medium px-2 py-1 rounded border border-red-200 hover:border-red-300 transition-colors">
                         Kundenstimme entfernen
                     </button>
                 </div>

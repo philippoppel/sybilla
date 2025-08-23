@@ -10,26 +10,49 @@
         body { font-family: 'Inter', sans-serif; }
         .admin-hidden { display: none; }
         .admin-visible { display: block; }
+        
+        /* Mobile responsive improvements */
+        @media (max-width: 768px) {
+            .mobile-stack { flex-direction: column !important; }
+            .mobile-full { width: 100% !important; }
+            .mobile-hidden { display: none !important; }
+            .mobile-text-sm { font-size: 0.875rem !important; }
+            .mobile-px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+            .mobile-py-1 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+            .mobile-space-y-2 > * + * { margin-top: 0.5rem !important; }
+            
+            /* Mobile tab navigation */
+            .mobile-tabs { flex-wrap: wrap; justify-content: flex-start; }
+            .mobile-tabs .tab-btn { min-width: auto; padding: 0.5rem 0.75rem; font-size: 0.875rem; }
+            
+            /* Mobile form adjustments */
+            .mobile-form-spacing { margin-bottom: 1rem; }
+        }
+        
+        @media (max-width: 640px) {
+            .mobile-sm-hidden { display: none !important; }
+            .mobile-sm-block { display: block !important; }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
     <!-- Login Form -->
-    <div id="loginForm" class="min-h-screen flex items-center justify-center">
-        <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+    <div id="loginForm" class="min-h-screen flex items-center justify-center px-4">
+        <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg max-w-md w-full">
             <div class="text-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-900">Admin Login</h1>
-                <p class="text-gray-600 mt-2">Zugang zum Content Management</p>
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Admin Login</h1>
+                <p class="text-gray-600 mt-2 text-sm sm:text-base">Zugang zum Content Management</p>
             </div>
             <form id="adminLogin" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Benutzername</label>
-                    <input type="text" id="username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="text" id="username" class="w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required autocomplete="username">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Passwort</label>
-                    <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="password" id="password" class="w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required autocomplete="current-password">
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-base font-medium">
                     Anmelden
                 </button>
             </form>
@@ -41,13 +64,15 @@
     <div id="adminPanel" class="admin-hidden">
         <nav class="bg-white shadow-sm border-b">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
+                <div class="flex justify-between items-center h-16 mobile-stack">
                     <div class="flex items-center">
-                        <h1 class="text-xl font-bold text-gray-900">Content Management</h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-gray-900">Content Management</h1>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <span class="text-sm text-gray-600">Angemeldet als: <strong id="currentUser"></strong></span>
-                        <button id="logoutBtn" class="text-sm text-red-600 hover:text-red-800">Abmelden</button>
+                    <div class="flex items-center space-x-2 sm:space-x-4 mobile-full justify-between sm:justify-end">
+                        <span class="text-xs sm:text-sm text-gray-600 mobile-hidden sm:inline">
+                            Angemeldet als: <strong id="currentUser" class="break-all"></strong>
+                        </span>
+                        <button id="logoutBtn" class="text-sm text-red-600 hover:text-red-800 whitespace-nowrap">Abmelden</button>
                     </div>
                 </div>
             </div>
@@ -56,13 +81,13 @@
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <!-- Tabs -->
             <div class="border-b border-gray-200 mb-6">
-                <nav class="-mb-px flex space-x-8">
-                    <button class="tab-btn border-b-2 border-blue-500 py-2 px-1 text-sm font-medium text-blue-600" data-tab="hero">Hero Bereich</button>
-                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="about">Über mich</button>
-                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="services">Leistungen</button>
-                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="testimonials">Kundenstimmen</button>
-                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="contact">Kontakt</button>
-                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="images">Bilder</button>
+                <nav class="-mb-px flex space-x-2 sm:space-x-8 overflow-x-auto mobile-tabs">
+                    <button class="tab-btn border-b-2 border-blue-500 py-2 px-1 sm:px-1 text-sm font-medium text-blue-600 whitespace-nowrap" data-tab="hero">Hero</button>
+                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 sm:px-1 text-sm font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap" data-tab="about">Über mich</button>
+                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 sm:px-1 text-sm font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap" data-tab="services">Leistungen</button>
+                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 sm:px-1 text-sm font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap" data-tab="testimonials">Stimmen</button>
+                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 sm:px-1 text-sm font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap" data-tab="contact">Kontakt</button>
+                    <button class="tab-btn border-b-2 border-transparent py-2 px-1 sm:px-1 text-sm font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap" data-tab="images">Bilder</button>
                 </nav>
             </div>
 
@@ -70,20 +95,20 @@
             <div id="tabContent">
                 <!-- Hero Tab -->
                 <div id="hero-tab" class="tab-content">
-                    <div class="bg-white shadow rounded-lg p-6">
+                    <div class="bg-white shadow rounded-lg p-4 sm:p-6">
                         <h2 class="text-lg font-medium text-gray-900 mb-4">Hero Bereich bearbeiten</h2>
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Haupttitel</label>
-                                <input type="text" id="heroTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="text" id="heroTitle" class="w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Untertitel</label>
-                                <textarea id="heroSubtitle" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                <textarea id="heroSubtitle" rows="3" class="w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
-                                <input type="text" id="heroButtonText" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="text" id="heroButtonText" class="w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                         </div>
                     </div>
@@ -91,20 +116,20 @@
 
                 <!-- About Tab -->
                 <div id="about-tab" class="tab-content hidden">
-                    <div class="bg-white shadow rounded-lg p-6">
+                    <div class="bg-white shadow rounded-lg p-4 sm:p-6">
                         <h2 class="text-lg font-medium text-gray-900 mb-4">Über mich bearbeiten</h2>
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                                <input type="text" id="aboutName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="text" id="aboutName" class="w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Beschreibung 1</label>
-                                <textarea id="aboutDesc1" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                <textarea id="aboutDesc1" rows="4" class="w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Beschreibung 2</label>
-                                <textarea id="aboutDesc2" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                <textarea id="aboutDesc2" rows="4" class="w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
                             </div>
                         </div>
                     </div>
@@ -126,7 +151,7 @@
                             <div id="servicesContainer">
                                 <h3 class="text-md font-medium text-gray-900 mb-3">Leistungen</h3>
                                 <div id="servicesList"></div>
-                                <button type="button" id="addServiceBtn" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                <button type="button" id="addServiceBtn" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm sm:text-base font-medium w-full sm:w-auto">
                                     Neue Leistung hinzufügen
                                 </button>
                             </div>
@@ -150,7 +175,7 @@
                             <div id="testimonialsContainer">
                                 <h3 class="text-md font-medium text-gray-900 mb-3">Kundenstimmen</h3>
                                 <div id="testimonialsList"></div>
-                                <button type="button" id="addTestimonialBtn" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                <button type="button" id="addTestimonialBtn" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm sm:text-base font-medium w-full sm:w-auto">
                                     Neue Kundenstimme hinzufügen
                                 </button>
                             </div>
@@ -177,18 +202,18 @@
 
                 <!-- Images Tab -->
                 <div id="images-tab" class="tab-content hidden">
-                    <div class="bg-white shadow rounded-lg p-6">
+                    <div class="bg-white shadow rounded-lg p-4 sm:p-6">
                         <h2 class="text-lg font-medium text-gray-900 mb-4">Bilder verwalten</h2>
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Hero Hintergrundbild</label>
-                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-6 text-center">
                                     <input type="file" id="heroImageUpload" accept="image/*" class="hidden">
                                     <div id="heroImageContainer" class="mb-4">
                                         <img id="heroImagePreview" class="mx-auto max-h-32 rounded object-cover">
-                                        <p id="heroImagePath" class="text-xs text-gray-600 mt-2"></p>
+                                        <p id="heroImagePath" class="text-xs text-gray-600 mt-2 break-all"></p>
                                     </div>
-                                    <button type="button" onclick="document.getElementById('heroImageUpload').click()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                    <button type="button" onclick="document.getElementById('heroImageUpload').click()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm sm:text-base font-medium w-full sm:w-auto">
                                         Bild ändern
                                     </button>
                                     <p class="text-xs text-gray-500 mt-2">PNG, JPG bis zu 10MB</p>
@@ -196,13 +221,13 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Profilbild</label>
-                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-6 text-center">
                                     <input type="file" id="profileImageUpload" accept="image/*" class="hidden">
                                     <div id="profileImageContainer" class="mb-4">
                                         <img id="profileImagePreview" class="mx-auto max-h-32 rounded-full object-cover">
-                                        <p id="profileImagePath" class="text-xs text-gray-600 mt-2"></p>
+                                        <p id="profileImagePath" class="text-xs text-gray-600 mt-2 break-all"></p>
                                     </div>
-                                    <button type="button" onclick="document.getElementById('profileImageUpload').click()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                    <button type="button" onclick="document.getElementById('profileImageUpload').click()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm sm:text-base font-medium w-full sm:w-auto">
                                         Bild ändern
                                     </button>
                                     <p class="text-xs text-gray-500 mt-2">PNG, JPG bis zu 10MB</p>
@@ -214,22 +239,22 @@
             </div>
 
             <!-- Save Buttons -->
-            <div class="mt-6 flex justify-end space-x-3">
-                <button id="saveBtn" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors">
+            <div class="mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
+                <button id="saveBtn" class="bg-green-600 text-white px-4 sm:px-6 py-2 rounded-md hover:bg-green-700 transition-colors text-sm sm:text-base font-medium">
                     Änderungen speichern
                 </button>
-                <button id="publishBtn" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                <button id="publishBtn" class="bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm sm:text-base font-medium">
                     Veröffentlichen
                 </button>
             </div>
         </div>
 
         <!-- Status Messages -->
-        <div id="statusMessage" class="fixed bottom-4 right-4 hidden">
-            <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm">
+        <div id="statusMessage" class="fixed bottom-4 right-4 left-4 sm:left-auto hidden z-50">
+            <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm mx-auto sm:mx-0">
                 <div class="flex items-center">
                     <div id="statusIcon" class="flex-shrink-0 w-5 h-5 mr-3"></div>
-                    <div id="statusText" class="text-sm font-medium text-gray-900"></div>
+                    <div id="statusText" class="text-sm font-medium text-gray-900 break-words"></div>
                 </div>
             </div>
         </div>
