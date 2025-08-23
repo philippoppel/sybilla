@@ -7,7 +7,7 @@
   "hero": {
     "title": "Klarheit und Struktur für Ihre Finanzen",
     "subtitle": "Als Ihre Interim-Managerin im Finanzbereich sorge ich für Stabilität, optimiere Prozesse und überbrücke Vakanzen – professionell, flexibel und lösungsorientiert.",
-    "buttonText": "Meine Leistungen entdecken",
+    "buttonText": "Meine Leistungen entdecken..",
     "backgroundImage": "./hero-image.jpeg"
   },
   "about": {
@@ -47,7 +47,7 @@
       },
       {
         "text": "Die Implementierung von SAP Concur schien zunächst ein unlösbares Problem. Frau Sedlar hat nicht nur die technische Umsetzung gemeistert, sondern auch unser Team erfolgreich geschult. Heute sparen wir 40% Zeit bei der Reisekostenabrechnung.",
-        "author": "Mag. Julia Bauer",
+        "author": "Mag. Julia Schneider",
         "position": "HR-Leiterin, Produktions AG"
       },
       {
@@ -61,6 +61,6 @@
     "title": "Kontakt",
     "subtitle": "Lassen Sie uns über Ihr nächstes Projekt sprechen.",
     "enabled": true,
-    "formDescription": "Füllen Sie das Formular aus und ich werde mich bei Ihnen melden, um die Details Ihres Anliegens vertraulich zu besprechen."
+    "formDescription": "Füllen Sie das Formular aus und ich werde mich binnen 24 Stunden bei Ihnen melden, um die Details Ihres Anliegens vertraulich zu besprechen."
   }
 }
