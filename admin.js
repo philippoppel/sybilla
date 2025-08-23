@@ -161,12 +161,14 @@ class AdminPanel {
     }
 
     logout() {
+        this.isLoggingOut = true;
         this.clearAuthData();
         this.isAuthenticated = false;
         this.currentUser = '';
         this.content = {}; // Clear content data
         this.showLoginForm();
         this.showStatus('Erfolgreich abgemeldet', 'info');
+        this.isLoggingOut = false;
     }
     
     clearAuthData() {
@@ -244,10 +246,13 @@ class AdminPanel {
                     this.cachedToken = auth.token;
                     return auth.token;
                 } else {
-                    // Token expired, clear auth and return null
+                    // Token expired, clear auth and return null  
                     this.clearAuthData();
                     this.isAuthenticated = false;
-                    this.showLoginForm();
+                    // Don't call showLoginForm here to prevent recursion in loadContent
+                    if (!this.isLoggingOut) {
+                        this.showLoginForm();
+                    }
                 }
             } catch (e) {
                 console.error('Error parsing auth data:', e);
