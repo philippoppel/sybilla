@@ -45,7 +45,7 @@
     
     <!-- Performance hints -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="preload" href="./hero-image.jpeg?v=2025" as="image">
+    <!-- Hero-Bild wird dynamisch geladen -->
     <link rel="preload" href="./logo.png" as="image">
 
     <!-- Strukturierte Daten (JSON-LD Schema) -->
@@ -120,8 +120,7 @@
             scroll-behavior: smooth;
         }
         .hero-bg {
-            /* HINTERGRUNDBILD: Erstellen Sie eine Datei 'hero-image.jpeg' (empfohlene Größe: 1920x1080px) und legen Sie sie in dasselbe Verzeichnis. */
-            background-image: url('./hero-image.jpeg?v=2025');
+            /* Dynamisches Hintergrundbild wird via JavaScript gesetzt */
             background-size: cover;
             background-position: center;
         }
@@ -614,6 +613,52 @@
             });
         }
     });
+
+    // Load dynamic content from content.json
+    async function loadDynamicContent() {
+        try {
+            const response = await fetch('./content.json');
+            const content = await response.json();
+            
+            // Set hero background image dynamically
+            const heroSection = document.querySelector('.hero-bg');
+            if (heroSection && content.hero && content.hero.backgroundImage) {
+                heroSection.style.backgroundImage = `url('${content.hero.backgroundImage}?v=${Date.now()}')`;
+                
+                // Preload the image
+                const link = document.createElement('link');
+                link.rel = 'preload';
+                link.as = 'image';
+                link.href = content.hero.backgroundImage;
+                document.head.appendChild(link);
+            }
+            
+            // Update hero text dynamically
+            const heroTitle = document.getElementById('hero-heading');
+            const heroSubtitle = document.querySelector('.hero-bg p');
+            const heroButton = document.querySelector('.hero-bg a');
+            
+            if (heroTitle && content.hero && content.hero.title) {
+                heroTitle.textContent = content.hero.title;
+            }
+            if (heroSubtitle && content.hero && content.hero.subtitle) {
+                heroSubtitle.textContent = content.hero.subtitle;
+            }
+            if (heroButton && content.hero && content.hero.buttonText) {
+                heroButton.textContent = content.hero.buttonText;
+            }
+        } catch (error) {
+            console.error('Error loading dynamic content:', error);
+            // Fallback to default image if content.json fails
+            const heroSection = document.querySelector('.hero-bg');
+            if (heroSection) {
+                heroSection.style.backgroundImage = `url('./hero-image.jpeg')`;
+            }
+        }
+    }
+
+    // Load content when page loads
+    loadDynamicContent();
 </script>
 </body>
 </html>
