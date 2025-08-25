@@ -73,6 +73,7 @@ function rateLimit(req, res, next) {
 function authenticate(req, res, next) {
     const auth = req.headers.authorization;
     if (!auth || !auth.startsWith('Bearer ')) {
+        console.log('Auth error: No authorization header');
         return res.status(401).json({ error: 'Authentication required' });
     }
 
@@ -82,6 +83,7 @@ function authenticate(req, res, next) {
         // JWT-like token validation with HMAC
         const [payload, signature] = token.split('.');
         if (!payload || !signature) {
+            console.log('Auth error: Invalid token format');
             return res.status(401).json({ error: 'Invalid token format' });
         }
         
@@ -92,6 +94,12 @@ function authenticate(req, res, next) {
             .digest('base64url');
             
         if (signature !== expectedSignature) {
+            console.log('Auth error: Invalid signature', {
+                expected: expectedSignature,
+                received: signature,
+                payload: payload,
+                secretKeyLength: SECRET_KEY ? SECRET_KEY.length : 0
+            });
             return res.status(401).json({ error: 'Invalid token signature' });
         }
         
@@ -103,17 +111,20 @@ function authenticate(req, res, next) {
         const expectedPass = ADMIN_PASS || 'secret'; // Fallback for development
         
         if (username !== expectedUser || password !== expectedPass) {
+            console.log('Auth error: Invalid credentials');
             return res.status(401).json({ error: 'Invalid credentials' });
         }
         
         // Check timestamp (2 hour expiry)
         if (Date.now() - parseInt(timestamp) > 2 * 60 * 60 * 1000) {
+            console.log('Auth error: Token expired');
             return res.status(401).json({ error: 'Token expired' });
         }
         
         req.user = username;
         next();
     } catch (error) {
+        console.log('Auth error: Exception', error);
         return res.status(401).json({ error: 'Invalid token' });
     }
 }
@@ -172,6 +183,17 @@ async function executeGitCommands(message) {
 // Health check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Debug endpoint for auth issues
+app.get('/api/debug-secret', (req, res) => {
+    res.json({
+        secretKeyLength: SECRET_KEY ? SECRET_KEY.length : 0,
+        secretKeyFirst3: SECRET_KEY ? SECRET_KEY.substring(0, 3) : 'undefined',
+        adminUser: ADMIN_USER,
+        adminPassSet: !!ADMIN_PASS,
+        nodeEnv: NODE_ENV
+    });
 });
 
 // Authentication endpoint

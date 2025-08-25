@@ -105,20 +105,14 @@ export default async function handler(req, res) {
     const testPass = ADMIN_PASS || 'cms2024';
     
     if (username === testUser && password === testPass) {
-        // Create simple but secure token
+        // Create secure token with HMAC signature (compatible with server.js format)
         const timestamp = Date.now();
-        const tokenData = {
-            user: username,
-            timestamp: timestamp,
-            expires: timestamp + (2 * 60 * 60 * 1000) // 2 hours
-        };
-        
-        // Simple encryption with SECRET_KEY
-        const tokenString = JSON.stringify(tokenData);
-        const token = crypto
+        const payload = Buffer.from(`${username}:${password}:${timestamp}`).toString('base64url');
+        const signature = crypto
             .createHmac('sha256', SECRET_KEY)
-            .update(tokenString)
-            .digest('hex') + '.' + Buffer.from(tokenString).toString('base64');
+            .update(payload)
+            .digest('base64url');
+        const token = `${payload}.${signature}`;
         
         res.json({
             success: true,
