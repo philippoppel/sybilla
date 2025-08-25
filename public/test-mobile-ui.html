@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Mobile UI Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .test-result { margin: 0.5rem 0; padding: 0.5rem; border-radius: 0.25rem; }
+        .test-pass { background-color: #dcfce7; border: 1px solid #16a34a; color: #15803d; }
+        .test-fail { background-color: #fef2f2; border: 1px solid #dc2626; color: #dc2626; }
+        .test-info { background-color: #eff6ff; border: 1px solid #3b82f6; color: #1d4ed8; }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6">CMS Mobile UI Automated Test</h1>
+        
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-lg font-semibold mb-4">Test Configuration</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Server URL</label>
+                    <input type="text" id="serverUrl" value="http://localhost:3000" class="w-full px-3 py-2 border rounded">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Test Credentials</label>
+                    <input type="text" id="testCreds" value="admin:secret" class="w-full px-3 py-2 border rounded">
+                </div>
+            </div>
+            <button onclick="runAllTests()" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                🧪 Run Complete UI Test Suite
+            </button>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold mb-4">Test Results</h2>
+            <div id="testResults">
+                <div class="test-info">Klicken Sie "Run Complete UI Test Suite" um die Tests zu starten</div>
+            </div>
+        </div>
+
+        <!-- Hidden iframe for testing -->
+        <iframe id="testFrame" src="" style="display: none;" width="375" height="667"></iframe>
+    </div>
+
+    <script>
+        let testResults = [];
+        
+        function logTest(status, message) {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result test-${status.toLowerCase()}`;
+            
+            const icon = status === 'PASS' ? '✅' : status === 'FAIL' ? '❌' : 'ℹ️';
+            resultDiv.innerHTML = `${icon} ${message}`;
+            
+            document.getElementById('testResults').appendChild(resultDiv);
+            testResults.push({ status, message });
+            
+            // Scroll to bottom
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function makeRequest(method, path, data = null, headers = {}) {
+            const serverUrl = document.getElementById('serverUrl').value;
+            
+            try {
+                const response = await fetch(serverUrl + path, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...headers
+                    },
+                    body: data ? JSON.stringify(data) : null
+                });
+
+                const responseData = await response.json();
+                return { status: response.status, data: responseData };
+            } catch (error) {
+                throw new Error(`Request failed: ${error.message}`);
+            }
+        }
+
+        async function testLogin() {
+            const [username, password] = document.getElementById('testCreds').value.split(':');
+            
+            try {
+                const response = await makeRequest('POST', '/api/auth', { username, password });
+                
+                if (response.status === 200 && response.data.success) {
+                    logTest('PASS', 'Login functionality arbeitet korrekt');
+                    return response.data.token;
+                } else {
+                    logTest('FAIL', `Login fehlgeschlagen: ${response.data.error || 'Unknown error'}`);
+                    return null;
+                }
+            } catch (error) {
+                logTest('FAIL', `Login request failed: ${error.message}`);
+                return null;
+            }
+        }
+
+        async function testMobileUI() {
+            return new Promise((resolve) => {
+                const serverUrl = document.getElementById('serverUrl').value;
+                const iframe = document.getElementById('testFrame');
+                iframe.src = serverUrl + '/admin.html';
+                
+                iframe.onload = () => {
+                    try {
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        
+                        // Test 1: Mobile viewport meta tag
+                        const viewport = iframeDoc.querySelector('meta[name="viewport"]');
+                        if (viewport && viewport.content.includes('width=device-width')) {
+                            logTest('PASS', 'Mobile viewport korrekt konfiguriert');
+                        } else {
+                            logTest('FAIL', 'Mobile viewport fehlt oder falsch konfiguriert');
+                        }
+                        
+                        // Test 2: Responsive CSS classes
+                        const mobileStyles = iframeDoc.querySelector('style').textContent;
+                        if (mobileStyles.includes('@media (max-width: 768px)')) {
+                            logTest('PASS', 'Mobile responsive CSS vorhanden');
+                        } else {
+                            logTest('FAIL', 'Mobile responsive CSS fehlt');
+                        }
+                        
+                        // Test 3: Mobile-optimized tab navigation
+                        const tabNav = iframeDoc.querySelector('.mobile-tabs');
+                        if (tabNav) {
+                            logTest('PASS', 'Mobile Tab-Navigation implementiert');
+                        } else {
+                            logTest('FAIL', 'Mobile Tab-Navigation fehlt');
+                        }
+                        
+                        // Test 4: Touch-optimized buttons
+                        const buttons = iframeDoc.querySelectorAll('button');
+                        let mobileOptimized = false;
+                        buttons.forEach(btn => {
+                            if (btn.className.includes('text-base') || btn.className.includes('font-medium')) {
+                                mobileOptimized = true;
+                            }
+                        });
+                        
+                        if (mobileOptimized) {
+                            logTest('PASS', 'Buttons für Touch-Geräte optimiert');
+                        } else {
+                            logTest('FAIL', 'Buttons nicht für Touch-Geräte optimiert');
+                        }
+                        
+                        resolve();
+                        
+                    } catch (error) {
+                        logTest('FAIL', `Mobile UI Test Error: ${error.message}`);
+                        resolve();
+                    }
+                };
+                
+                iframe.onerror = () => {
+                    logTest('FAIL', 'Admin Panel konnte nicht geladen werden');
+                    resolve();
+                };
+            });
+        }
+
+        async function testSessionWorkflow(token) {
+            try {
+                // Test 1: First content save
+                const save1 = await makeRequest('POST', '/api/content', {
+                    site: { title: 'UI Test Site', description: 'Test', author: 'Test' },
+                    hero: { title: 'UI Test Hero 1' },
+                    about: { name: 'UI Test Name' }
+                }, {
+                    'Authorization': `Bearer ${token}`
+                });
+                
+                if (save1.status === 200) {
+                    logTest('PASS', 'Erste Content-Speicherung erfolgreich');
+                } else {
+                    logTest('FAIL', `Erste Content-Speicherung fehlgeschlagen: ${save1.data.error}`);
+                    return false;
+                }
+
+                // Test 2: Second content save (the critical test)
+                await new Promise(resolve => setTimeout(resolve, 500)); // Small delay
+                
+                const save2 = await makeRequest('POST', '/api/content', {
+                    site: { title: 'UI Test Site 2', description: 'Test', author: 'Test' },
+                    hero: { title: 'UI Test Hero 2 - CRITICAL!' },
+                    about: { name: 'UI Test Name 2' }
+                }, {
+                    'Authorization': `Bearer ${token}`
+                });
+                
+                if (save2.status === 200) {
+                    logTest('PASS', '🎉 Zweite Content-Speicherung erfolgreich - SESSION PROBLEM BEHOBEN!');
+                } else {
+                    logTest('FAIL', `🔥 Zweite Content-Speicherung fehlgeschlagen: ${save2.data.error} - SESSION PROBLEM BESTEHT!`);
+                    return false;
+                }
+
+                // Test 3: Publish action
+                const publish = await makeRequest('POST', '/api/publish', {
+                    message: 'UI Test Publish'
+                }, {
+                    'Authorization': `Bearer ${token}`
+                });
+                
+                if (publish.status === 200) {
+                    logTest('PASS', 'Publish-Funktionalität arbeitet korrekt');
+                } else {
+                    logTest('FAIL', `Publish fehlgeschlagen: ${publish.data.error}`);
+                }
+
+                return true;
+                
+            } catch (error) {
+                logTest('FAIL', `Session workflow error: ${error.message}`);
+                return false;
+            }
+        }
+
+        async function runAllTests() {
+            // Clear previous results
+            document.getElementById('testResults').innerHTML = '';
+            testResults = [];
+            
+            logTest('INFO', '🚀 Starting Comprehensive CMS UI Test Suite');
+            logTest('INFO', '');
+            logTest('INFO', '📋 Testing the exact problems mentioned by user:');
+            logTest('INFO', '1. Session management problems');
+            logTest('INFO', '2. Mobile optimization missing');
+            logTest('INFO', '3. Login/credential issues after first use');
+            logTest('INFO', '');
+
+            // Phase 1: Mobile UI Tests
+            logTest('INFO', '📱 Phase 1: Mobile UI & Responsiveness Tests');
+            await testMobileUI();
+
+            // Phase 2: Authentication & Session Tests
+            logTest('INFO', '');
+            logTest('INFO', '🔐 Phase 2: Authentication & Session Management');
+            const token = await testLogin();
+            
+            if (token) {
+                // Phase 3: Session Workflow Tests (The Critical Tests!)
+                logTest('INFO', '');
+                logTest('INFO', '🔄 Phase 3: Session Workflow Tests (CRITICAL!)');
+                await testSessionWorkflow(token);
+                
+                // Phase 4: Re-login test
+                logTest('INFO', '');
+                logTest('INFO', '🔄 Phase 4: Re-Login After Session Test');
+                const reloginToken = await testLogin();
+                if (reloginToken) {
+                    logTest('PASS', '🎉 Re-Login nach Session funktioniert perfekt!');
+                } else {
+                    logTest('FAIL', 'Re-Login nach Session fehlgeschlagen');
+                }
+            }
+
+            // Summary
+            const passed = testResults.filter(r => r.status === 'PASS').length;
+            const failed = testResults.filter(r => r.status === 'FAIL').length;
+            
+            logTest('INFO', '');
+            logTest('INFO', '='.repeat(50));
+            logTest('INFO', `📊 Final Results: ${passed} passed, ${failed} failed`);
+            
+            if (failed === 0) {
+                logTest('PASS', '🎉 ALL TESTS PASSED! CMS fully functional!');
+                logTest('INFO', '✅ Original problems completely resolved!');
+            } else {
+                logTest('FAIL', `⚠️ ${failed} test(s) failed - needs attention`);
+            }
+        }
+
+        // Auto-run tests when page loads (optional)
+        // setTimeout(runAllTests, 1000);
+    </script>
+</body>
+</html>

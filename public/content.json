@@ -5,7 +5,7 @@
     "author": "Sybilla Sedlar"
   },
   "hero": {
-    "title": "Klarheit und Struktur für Ihre Finanzen!",
+    "title": "Klarheit und Struktur für Ihre Finanzen",
     "subtitle": "Als Ihre Interim-Managerin im Finanzbereich sorge ich für Stabilität, optimiere Prozesse und überbrücke Vakanzen – professionell, flexibel und lösungsorientiert.",
     "buttonText": "Meine Leistungen entdecken",
     "backgroundImage": "./hero-image.jpeg"
@@ -19,7 +19,7 @@
     "profileImage": "./logo.png"
   },
   "services": {
-    "title": "Leistungen",
+    "title": "Leistungen", 
     "subtitle": "Maßgeschneiderte Unterstützung für Ihre finanzielle Stabilität und Effizienz.",
     "items": [
       {
@@ -27,7 +27,7 @@
         "description": "Ich überbrücke personelle Vakanzen im Finanzbereich – kurzfristig, zuverlässig und mit der Kompetenz, operative und strategische Aufgaben bis zur Rohbilanz sofort zu übernehmen."
       },
       {
-        "title": "Prozessoptimierung & SAP",
+        "title": "Prozessoptimierung & SAP", 
         "description": "Ich analysiere Ihre bestehenden Finanzprozesse, identifiziere Potenziale und implementiere effiziente Lösungen. Ein besonderer Fokus liegt auf der Arbeit mit SAP-Systemen wie <strong>SAP Concur</strong> und <strong>SAP HANA</strong>."
       },
       {
@@ -47,7 +47,7 @@
       },
       {
         "text": "Die Implementierung von SAP Concur schien zunächst ein unlösbares Problem. Frau Sedlar hat nicht nur die technische Umsetzung gemeistert, sondern auch unser Team erfolgreich geschult. Heute sparen wir 40% Zeit bei der Reisekostenabrechnung.",
-        "author": "Mag. Julia Schneider",
+        "author": "Mag. Julia Schneider", 
         "position": "HR-Leiterin, Produktions AG"
       },
       {

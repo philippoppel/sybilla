@@ -43,6 +43,7 @@ app.use((req, res, next) => {
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));
+app.use(express.static('.'));
 
 // Rate limiting for admin endpoints
 const rateLimiter = new Map();
@@ -336,55 +337,15 @@ app.get('/api/status', authenticate, (req, res) => {
     });
 });
 
-// Serve static files for non-API routes (CSS, JS, images)
-app.use(express.static('.', {
-    index: false // Don't serve index.html automatically
-}));
-
 // Error handling
 app.use((error, req, res, next) => {
     console.error('Server error:', error);
     res.status(500).json({ error: 'Internal server error' });
 });
 
-// Handle all non-API routes (for Vercel routing)
-app.get('*', (req, res, next) => {
-    // Skip API routes
-    if (req.path.startsWith('/api/')) {
-        return next();
-    }
-    
-    const requestedPath = req.query.path || req.path;
-    
-    // Handle specific HTML files
-    if (requestedPath === '' || requestedPath === '/') {
-        return res.sendFile(path.join(__dirname, 'index.html'));
-    }
-    
-    if (requestedPath === 'admin.html' || requestedPath === '/admin.html') {
-        return res.sendFile(path.join(__dirname, 'admin.html'));
-    }
-    
-    if (requestedPath === 'impressum.html' || requestedPath === '/impressum.html') {
-        return res.sendFile(path.join(__dirname, 'impressum.html'));
-    }
-    
-    if (requestedPath === 'datenschutz.html' || requestedPath === '/datenschutz.html') {
-        return res.sendFile(path.join(__dirname, 'datenschutz.html'));
-    }
-    
-    // Try to serve static files
-    const filePath = path.join(__dirname, requestedPath);
-    res.sendFile(filePath, (err) => {
-        if (err) {
-            res.status(404).json({ error: 'File not found' });
-        }
-    });
-});
-
-// 404 handler for API routes
-app.use('/api/*', (req, res) => {
-    res.status(404).json({ error: 'API endpoint not found' });
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({ error: 'Endpoint not found' });
 });
 
 // Start server (only in development/local)
