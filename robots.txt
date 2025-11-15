@@ -1,10 +1,45 @@
+# robots.txt für Sybilla Sedlar - Interim-Finanzmanagement
+# Optimiert für SEO und Crawler-Zugriff
+
 User-agent: *
 Allow: /
 
-# Sitemap-Verweis
-Sitemap: https://www.sybilla-sedlar.at/sitemap.xml
+# Wichtige Seiten für Crawler priorisieren
+Allow: /index.html
+Allow: /impressum.html
+Allow: /datenschutz.html
 
-# Verhindern der Indexierung von nicht-öffentlichen Bereichen (falls vorhanden)
+# Sitemap-Verweis (Google, Bing, etc.)
+Sitemap: https://sybillasedlar.vercel.app/sitemap.xml
+
+# Admin-Bereich blockieren
 Disallow: /admin/
+Disallow: /admin.html
+Disallow: /admin.js
+
+# Private/Interne Bereiche blockieren
 Disallow: /private/
-Disallow: /*.pdf$
+Disallow: /test-*
+Disallow: /*.json$
+
+# Temporäre/Test-Dateien
+Disallow: /content-test-backup.json
+Disallow: /test-cms.js
+Disallow: /test-mobile-ui.html
+
+# Server-Dateien nicht crawlen
+Disallow: /server.js
+Disallow: /content-loader.js
+
+# Crawl-Delay für schonenden Zugriff
+Crawl-delay: 1
+
+# Spezielle Anweisungen für Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Spezielle Anweisungen für Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1

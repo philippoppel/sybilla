@@ -1,21 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.sybilla-sedlar.at/</loc>
-    <lastmod>2025-01-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.sybilla-sedlar.at/impressum.html</loc>
-    <lastmod>2025-01-15</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://www.sybilla-sedlar.at/datenschutz.html</loc>
-    <lastmod>2025-01-15</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+    <!-- Hauptseite -->
+    <url>
+        <loc>https://sybillasedlar.vercel.app/</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://sybillasedlar.vercel.app/logo.png</image:loc>
+            <image:title>Sybilla Sedlar - Interim-Finanzmanagerin Wien</image:title>
+        </image:image>
+        <image:image>
+            <image:loc>https://sybillasedlar.vercel.app/hero-image.jpeg</image:loc>
+            <image:title>Interim CFO und Finanzmanagement</image:title>
+        </image:image>
+    </url>
+
+    <!-- Über mich Section -->
+    <url>
+        <loc>https://sybillasedlar.vercel.app/#about</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Leistungen Section -->
+    <url>
+        <loc>https://sybillasedlar.vercel.app/#services</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Projekte Section -->
+    <url>
+        <loc>https://sybillasedlar.vercel.app/#projects</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Referenzen Section -->
+    <url>
+        <loc>https://sybillasedlar.vercel.app/#testimonials</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Kontakt Section -->
+    <url>
+        <loc>https://sybillasedlar.vercel.app/#contact</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Impressum -->
+    <url>
+        <loc>https://sybillasedlar.vercel.app/impressum.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+
+    <!-- Datenschutz -->
+    <url>
+        <loc>https://sybillasedlar.vercel.app/datenschutz.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+
 </urlset>
