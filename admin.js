@@ -519,7 +519,7 @@ class AdminPanel {
                 };
 
                 try {
-                    const response = await fetch('/api/upload', {
+                    let response = await fetch(this.getApiUrl('/api/upload.js'), {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -527,6 +527,17 @@ class AdminPanel {
                         },
                         body: JSON.stringify(uploadData)
                     });
+
+                    if (response.status === 404) {
+                        response = await fetch(this.getApiUrl('/api/upload'), {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${this.cachedToken}`
+                            },
+                            body: JSON.stringify(uploadData)
+                        });
+                    }
 
                     const result = await response.json();
 
@@ -540,8 +551,8 @@ class AdminPanel {
                             document.getElementById('profileImagePath').textContent = `Aktuell: ${result.url}`;
                         }
 
-                        // Save updated content
-                        await this.saveContent();
+                        // Persist the new image URL in content.json
+                        await this.saveChanges();
                         
                         this.showStatus(`${type === 'hero' ? 'Hero' : 'Profil'} Bild erfolgreich hochgeladen`, 'success');
                     } else {

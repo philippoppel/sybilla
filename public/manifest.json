@@ -1,0 +1,32 @@
+{
+  "name": "Sybilla Sedlar - Interim-Finanzmanagement",
+  "short_name": "Sybilla Sedlar",
+  "description": "Interim-Finanzmanagement & Prozessoptimierung - Professionell, Flexibel, Lösungsorientiert",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "business",
+    "finance",
+    "consulting"
+  ],
+  "lang": "de-AT",
+  "dir": "ltr",
+  "scope": "/"
+}

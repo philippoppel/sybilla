@@ -330,16 +330,18 @@ app.post('/api/upload', authenticate, rateLimit, async (req, res) => {
         }
         
         // Generate safe filename
-        const ext = path.extname(filename);
+        const ext = path.extname(filename) || '.png';
+        const uploadsDir = path.join(__dirname, 'uploads');
+        await fs.mkdir(uploadsDir, { recursive: true });
         const safeName = `${type}-${Date.now()}${ext}`;
-        const filePath = path.join(__dirname, safeName);
-        
+        const filePath = path.join(uploadsDir, safeName);
+
         await fs.writeFile(filePath, buffer);
-        
+
         res.json({
             success: true,
             filename: safeName,
-            url: `/${safeName}`
+            url: `/uploads/${safeName}`
         });
         
     } catch (error) {

@@ -1,11 +1,10 @@
 const crypto = require('crypto');
 
-// Configuration
 const SECRET_KEY = process.env.SECRET_KEY;
 const ADMIN_USER = process.env.ADMIN_USER || 'admin';
 const ADMIN_PASS = process.env.ADMIN_PASS;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_REPO = process.env.GITHUB_REPO || 'philippoppel/sybilla';
+const GITHUB_REPO = process.env.GITHUB_REPO || 'philippoppel/sybilla-website';
 
 function authenticate(req) {
     const auth = req.headers.authorization;
@@ -56,16 +55,22 @@ function authenticate(req) {
     }
 }
 
+function sanitizeFilename(filename, type) {
+    const baseName = filename.replace(/[^a-zA-Z0-9._-]/g, '').toLowerCase();
+    const ext = baseName.includes('.') ? baseName.substring(baseName.lastIndexOf('.')) : '.png';
+    const safeType = type && typeof type === 'string' ? type.replace(/[^a-z0-9_-]/gi, '') : 'upload';
+    return `${safeType}-${Date.now()}${ext}`;
+}
+
 export default async function handler(req, res) {
-    // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    
+
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
-    
+
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -73,43 +78,62 @@ export default async function handler(req, res) {
     if (!authenticate(req)) {
         return res.status(401).json({ error: 'Authentication required' });
     }
-    
+
+    if (!SECRET_KEY || !ADMIN_PASS) {
+        return res.status(500).json({ error: 'Server configuration error' });
+    }
+
+    if (!GITHUB_TOKEN) {
+        return res.status(501).json({
+            error: 'GitHub integration required',
+            message: 'Set GITHUB_TOKEN to enable image uploads on Vercel'
+        });
+    }
+
     try {
-        const { content, message = 'Update content via admin panel' } = req.body;
-        
-        if (!GITHUB_TOKEN) {
-            return res.json({
-                success: false,
-                message: 'GitHub integration not configured. Please add GITHUB_TOKEN environment variable.',
-                action: 'manual'
-            });
+        const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+        const { image, filename, type } = body || {};
+
+        if (!image || !filename) {
+            return res.status(400).json({ error: 'Image and filename required' });
         }
-        
-        // Update content.json via GitHub API
-        const updateUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/content.json`;
-        
-        // First, get the current file SHA
-        const currentFileResponse = await fetch(updateUrl, {
+
+        if (!image.startsWith('data:image/')) {
+            return res.status(400).json({ error: 'Invalid image format' });
+        }
+
+        const base64Data = image.split(',')[1];
+        const buffer = Buffer.from(base64Data, 'base64');
+        if (buffer.length > 10 * 1024 * 1024) {
+            return res.status(400).json({ error: 'Image too large (max 10MB)' });
+        }
+
+        const safeName = sanitizeFilename(filename, type);
+        const uploadPath = `uploads/${safeName}`;
+
+        const updateUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${uploadPath}`;
+        const message = `Upload ${type || 'image'} via admin panel`;
+
+        const getResponse = await fetch(updateUrl, {
             headers: {
                 'Authorization': `Bearer ${GITHUB_TOKEN}`,
                 'Accept': 'application/vnd.github.v3+json',
                 'User-Agent': 'Sybilla-CMS'
             }
         });
-        
-        if (!currentFileResponse.ok) {
-            throw new Error(`GitHub API error: ${currentFileResponse.status}`);
+
+        let sha = undefined;
+        if (getResponse.ok) {
+            const existing = await getResponse.json();
+            sha = existing.sha;
         }
-        
-        const currentFile = await currentFileResponse.json();
-        
-        // Update the file
-        const updateData = {
+
+        const payload = {
             message,
-            content: Buffer.from(JSON.stringify(content, null, 2)).toString('base64'),
-            sha: currentFile.sha
+            content: buffer.toString('base64'),
+            sha
         };
-        
+
         const updateResponse = await fetch(updateUrl, {
             method: 'PUT',
             headers: {
@@ -118,31 +142,23 @@ export default async function handler(req, res) {
                 'User-Agent': 'Sybilla-CMS',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(updateData)
+            body: JSON.stringify(payload)
         });
-        
+
         if (!updateResponse.ok) {
-            const errorData = await updateResponse.json();
-            throw new Error(`GitHub update failed: ${errorData.message}`);
+            const errorData = await updateResponse.json().catch(() => ({}));
+            throw new Error(errorData.message || 'GitHub upload failed');
         }
-        
-        const result = await updateResponse.json();
-        
+
+        await updateResponse.json();
+
         res.json({
             success: true,
-            message: 'Content successfully published to GitHub! Vercel will auto-deploy shortly.',
-            deployed: true,
-            github: {
-                commit: result.commit.sha,
-                url: result.commit.html_url
-            }
+            filename: safeName,
+            url: `/${uploadPath}`
         });
-        
     } catch (error) {
-        console.error('Error publishing to GitHub:', error);
-        res.status(500).json({ 
-            error: 'Could not publish content to GitHub', 
-            details: error.message 
-        });
+        console.error('Upload error (serverless):', error);
+        res.status(500).json({ error: 'Could not upload image', details: error.message });
     }
 }

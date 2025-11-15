@@ -14,37 +14,42 @@ function authenticate(req) {
     }
 
     const token = auth.slice(7);
-    
+
     try {
-        const [signature, payload] = token.split('.');
-        if (!signature || !payload) {
+        const [payload, signature] = token.split('.');
+        if (!payload || !signature) {
             return false;
         }
-        
-        // Decode the token data
-        const tokenString = Buffer.from(payload, 'base64').toString();
-        const tokenData = JSON.parse(tokenString);
-        
-        // Verify signature
+
         const expectedSignature = crypto
             .createHmac('sha256', SECRET_KEY)
-            .update(tokenString)
-            .digest('hex');
-            
+            .update(payload)
+            .digest('base64url');
+
         if (signature !== expectedSignature) {
             return false;
         }
-        
-        // Check if token is expired
-        if (Date.now() > tokenData.expires) {
+
+        const decoded = Buffer.from(payload, 'base64url').toString();
+        const [username, password, timestamp] = decoded.split(':');
+
+        if (!username || !password || !timestamp) {
             return false;
         }
-        
-        // Check user
-        if (tokenData.user !== ADMIN_USER) {
+
+        if (username !== ADMIN_USER) {
             return false;
         }
-        
+
+        if (Date.now() - parseInt(timestamp, 10) > 2 * 60 * 60 * 1000) {
+            return false;
+        }
+
+        const expectedPass = ADMIN_PASS || 'secret';
+        if (password !== expectedPass) {
+            return false;
+        }
+
         return true;
     } catch (error) {
         return false;
