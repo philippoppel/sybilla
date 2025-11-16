@@ -43,7 +43,6 @@ app.use((req, res, next) => {
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));
-app.use(express.static('.'));
 
 // Rate limiting for admin endpoints
 const rateLimiter = new Map();
@@ -74,6 +73,7 @@ function rateLimit(req, res, next) {
 function authenticate(req, res, next) {
     const auth = req.headers.authorization;
     if (!auth || !auth.startsWith('Bearer ')) {
+        console.log('Auth error: No authorization header');
         return res.status(401).json({ error: 'Authentication required' });
     }
 
@@ -83,6 +83,7 @@ function authenticate(req, res, next) {
         // JWT-like token validation with HMAC
         const [payload, signature] = token.split('.');
         if (!payload || !signature) {
+            console.log('Auth error: Invalid token format');
             return res.status(401).json({ error: 'Invalid token format' });
         }
         
@@ -93,6 +94,12 @@ function authenticate(req, res, next) {
             .digest('base64url');
             
         if (signature !== expectedSignature) {
+            console.log('Auth error: Invalid signature', {
+                expected: expectedSignature,
+                received: signature,
+                payload: payload,
+                secretKeyLength: SECRET_KEY ? SECRET_KEY.length : 0
+            });
             return res.status(401).json({ error: 'Invalid token signature' });
         }
         
@@ -104,17 +111,20 @@ function authenticate(req, res, next) {
         const expectedPass = ADMIN_PASS || 'secret'; // Fallback for development
         
         if (username !== expectedUser || password !== expectedPass) {
+            console.log('Auth error: Invalid credentials');
             return res.status(401).json({ error: 'Invalid credentials' });
         }
         
         // Check timestamp (2 hour expiry)
         if (Date.now() - parseInt(timestamp) > 2 * 60 * 60 * 1000) {
+            console.log('Auth error: Token expired');
             return res.status(401).json({ error: 'Token expired' });
         }
         
         req.user = username;
         next();
     } catch (error) {
+        console.log('Auth error: Exception', error);
         return res.status(401).json({ error: 'Invalid token' });
     }
 }
@@ -173,6 +183,17 @@ async function executeGitCommands(message) {
 // Health check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Debug endpoint for auth issues
+app.get('/api/debug-secret', (req, res) => {
+    res.json({
+        secretKeyLength: SECRET_KEY ? SECRET_KEY.length : 0,
+        secretKeyFirst3: SECRET_KEY ? SECRET_KEY.substring(0, 3) : 'undefined',
+        adminUser: ADMIN_USER,
+        adminPassSet: !!ADMIN_PASS,
+        nodeEnv: NODE_ENV
+    });
 });
 
 // Authentication endpoint
@@ -309,16 +330,18 @@ app.post('/api/upload', authenticate, rateLimit, async (req, res) => {
         }
         
         // Generate safe filename
-        const ext = path.extname(filename);
+        const ext = path.extname(filename) || '.png';
+        const uploadsDir = path.join(__dirname, 'uploads');
+        await fs.mkdir(uploadsDir, { recursive: true });
         const safeName = `${type}-${Date.now()}${ext}`;
-        const filePath = path.join(__dirname, safeName);
-        
+        const filePath = path.join(uploadsDir, safeName);
+
         await fs.writeFile(filePath, buffer);
-        
+
         res.json({
             success: true,
             filename: safeName,
-            url: `/${safeName}`
+            url: `/uploads/${safeName}`
         });
         
     } catch (error) {
@@ -337,15 +360,55 @@ app.get('/api/status', authenticate, (req, res) => {
     });
 });
 
+// Serve static files for non-API routes (CSS, JS, images)
+app.use(express.static('.', {
+    index: false // Don't serve index.html automatically
+}));
+
 // Error handling
 app.use((error, req, res, next) => {
     console.error('Server error:', error);
     res.status(500).json({ error: 'Internal server error' });
 });
 
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({ error: 'Endpoint not found' });
+// Handle all non-API routes (for Vercel routing)
+app.get('*', (req, res, next) => {
+    // Skip API routes
+    if (req.path.startsWith('/api/')) {
+        return next();
+    }
+    
+    const requestedPath = req.query.path || req.path;
+    
+    // Handle specific HTML files
+    if (requestedPath === '' || requestedPath === '/') {
+        return res.sendFile(path.join(__dirname, 'index.html'));
+    }
+    
+    if (requestedPath === 'admin.html' || requestedPath === '/admin.html') {
+        return res.sendFile(path.join(__dirname, 'admin.html'));
+    }
+    
+    if (requestedPath === 'impressum.html' || requestedPath === '/impressum.html') {
+        return res.sendFile(path.join(__dirname, 'impressum.html'));
+    }
+    
+    if (requestedPath === 'datenschutz.html' || requestedPath === '/datenschutz.html') {
+        return res.sendFile(path.join(__dirname, 'datenschutz.html'));
+    }
+    
+    // Try to serve static files
+    const filePath = path.join(__dirname, requestedPath);
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            res.status(404).json({ error: 'File not found' });
+        }
+    });
+});
+
+// 404 handler for API routes
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ error: 'API endpoint not found' });
 });
 
 // Start server (only in development/local)

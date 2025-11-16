@@ -486,7 +486,7 @@ class AdminPanel {
         // window.open('index.html', '_blank');
     }
 
-    handleImageUpload(event, type) {
+    async handleImageUpload(event, type) {
         const file = event.target.files[0];
         if (!file) return;
 
@@ -501,17 +501,73 @@ class AdminPanel {
             return;
         }
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const previewId = type === 'hero' ? 'heroImagePreview' : 'profileImagePreview';
-            const preview = document.getElementById(previewId);
-            preview.src = e.target.result;
-            preview.style.display = 'block';
+        try {
+            this.showStatus('Bild wird hochgeladen...', 'info');
+            
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const previewId = type === 'hero' ? 'heroImagePreview' : 'profileImagePreview';
+                const preview = document.getElementById(previewId);
+                preview.src = e.target.result;
+                preview.style.display = 'block';
 
-            // In production, this would upload to a server
-            this.showStatus(`${type === 'hero' ? 'Hero' : 'Profil'} Bild ausgewählt`, 'success');
-        };
-        reader.readAsDataURL(file);
+                // Upload to server
+                const uploadData = {
+                    image: e.target.result,
+                    filename: file.name,
+                    type: type
+                };
+
+                try {
+                    let response = await fetch(this.getApiUrl('/api/upload.js'), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${this.cachedToken}`
+                        },
+                        body: JSON.stringify(uploadData)
+                    });
+
+                    if (response.status === 404) {
+                        response = await fetch(this.getApiUrl('/api/upload'), {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${this.cachedToken}`
+                            },
+                            body: JSON.stringify(uploadData)
+                        });
+                    }
+
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        // Update content.json with new image path
+                        if (type === 'hero') {
+                            this.content.hero.backgroundImage = result.url;
+                            document.getElementById('heroImagePath').textContent = `Aktuell: ${result.url}`;
+                        } else if (type === 'profile') {
+                            this.content.about.profileImage = result.url;
+                            document.getElementById('profileImagePath').textContent = `Aktuell: ${result.url}`;
+                        }
+
+                        // Persist the new image URL in content.json
+                        await this.saveChanges();
+                        
+                        this.showStatus(`${type === 'hero' ? 'Hero' : 'Profil'} Bild erfolgreich hochgeladen`, 'success');
+                    } else {
+                        throw new Error(result.error || 'Upload fehlgeschlagen');
+                    }
+                } catch (uploadError) {
+                    console.error('Upload error:', uploadError);
+                    this.showStatus(`Fehler beim Hochladen: ${uploadError.message}`, 'error');
+                }
+            };
+            reader.readAsDataURL(file);
+        } catch (error) {
+            console.error('Image upload error:', error);
+            this.showStatus('Fehler beim Verarbeiten der Datei', 'error');
+        }
     }
 
     showStatus(message, type = 'info') {
